@@ -1,7 +1,7 @@
 package com.sehzadi.launcher.ai.services
 
-import com.sehzadi.launcher.BuildConfig
 import com.sehzadi.launcher.ai.SearchResult
+import com.sehzadi.launcher.storage.StorageManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
@@ -14,13 +14,15 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class TavilyService @Inject constructor() {
+class TavilyService @Inject constructor(
+    private val storageManager: StorageManager
+) {
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(60, TimeUnit.SECONDS)
         .build()
 
-    private val apiKey: String get() = BuildConfig.TAVILY_API_KEY
+    private val apiKey: String get() = storageManager.getApiKey("tavily")
     private val baseUrl = "https://api.tavily.com/search"
 
     suspend fun search(query: String, maxResults: Int = 5): List<SearchResult> = withContext(Dispatchers.IO) {

@@ -1,6 +1,6 @@
 package com.sehzadi.launcher.ai.services
 
-import com.sehzadi.launcher.BuildConfig
+import com.sehzadi.launcher.storage.StorageManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
@@ -14,13 +14,15 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GeminiService @Inject constructor() {
+class GeminiService @Inject constructor(
+    private val storageManager: StorageManager
+) {
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(60, TimeUnit.SECONDS)
         .build()
 
-    private val apiKey: String get() = BuildConfig.GEMINI_API_KEY
+    private val apiKey: String get() = storageManager.getApiKey("gemini")
     private val baseUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
 
     suspend fun chat(message: String, context: String = ""): String = withContext(Dispatchers.IO) {

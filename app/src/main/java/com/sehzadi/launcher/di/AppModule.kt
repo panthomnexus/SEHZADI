@@ -52,32 +52,35 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGeminiService(): GeminiService {
-        return GeminiService()
+    fun provideGeminiService(storageManager: StorageManager): GeminiService {
+        return GeminiService(storageManager)
     }
 
     @Provides
     @Singleton
-    fun provideGroqService(): GroqService {
-        return GroqService()
+    fun provideGroqService(storageManager: StorageManager): GroqService {
+        return GroqService(storageManager)
     }
 
     @Provides
     @Singleton
-    fun provideHuggingFaceService(@ApplicationContext context: Context): HuggingFaceService {
-        return HuggingFaceService(context)
+    fun provideHuggingFaceService(
+        @ApplicationContext context: Context,
+        storageManager: StorageManager
+    ): HuggingFaceService {
+        return HuggingFaceService(context, storageManager)
     }
 
     @Provides
     @Singleton
-    fun provideTavilyService(): TavilyService {
-        return TavilyService()
+    fun provideTavilyService(storageManager: StorageManager): TavilyService {
+        return TavilyService(storageManager)
     }
 
     @Provides
     @Singleton
-    fun provideNotionService(): NotionService {
-        return NotionService()
+    fun provideNotionService(storageManager: StorageManager): NotionService {
+        return NotionService(storageManager)
     }
 
     @Provides

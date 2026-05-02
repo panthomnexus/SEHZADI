@@ -149,6 +149,14 @@ class MainViewModel @Inject constructor(
         voiceEngine.deactivateSession()
     }
 
+    fun saveApiKey(key: String, value: String) {
+        storageManager.saveApiKey(key, value)
+    }
+
+    fun getApiKey(key: String): String {
+        return storageManager.getApiKey(key)
+    }
+
     override fun onCleared() {
         super.onCleared()
         voiceEngine.destroy()

@@ -1,6 +1,6 @@
 package com.sehzadi.launcher.ai.services
 
-import com.sehzadi.launcher.BuildConfig
+import com.sehzadi.launcher.storage.StorageManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
@@ -14,13 +14,15 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GroqService @Inject constructor() {
+class GroqService @Inject constructor(
+    private val storageManager: StorageManager
+) {
     private val client = OkHttpClient.Builder()
         .connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .build()
 
-    private val apiKey: String get() = BuildConfig.GROQ_API_KEY
+    private val apiKey: String get() = storageManager.getApiKey("groq")
     private val baseUrl = "https://api.groq.com/openai/v1/chat/completions"
 
     suspend fun chat(message: String): String = withContext(Dispatchers.IO) {

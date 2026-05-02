@@ -1,6 +1,6 @@
 package com.sehzadi.launcher.ai.services
 
-import com.sehzadi.launcher.BuildConfig
+import com.sehzadi.launcher.storage.StorageManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
@@ -9,7 +9,6 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.os.Environment
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
@@ -20,14 +19,15 @@ import javax.inject.Singleton
 
 @Singleton
 class HuggingFaceService @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val storageManager: StorageManager
 ) {
     private val client = OkHttpClient.Builder()
         .connectTimeout(60, TimeUnit.SECONDS)
         .readTimeout(120, TimeUnit.SECONDS)
         .build()
 
-    private val apiKey: String get() = BuildConfig.HUGGINGFACE_API_KEY
+    private val apiKey: String get() = storageManager.getApiKey("huggingface")
     private val modelUrl = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
 
     suspend fun generateImage(prompt: String): String = withContext(Dispatchers.IO) {

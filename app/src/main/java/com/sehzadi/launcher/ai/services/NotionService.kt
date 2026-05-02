@@ -1,6 +1,6 @@
 package com.sehzadi.launcher.ai.services
 
-import com.sehzadi.launcher.BuildConfig
+import com.sehzadi.launcher.storage.StorageManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
@@ -14,14 +14,16 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NotionService @Inject constructor() {
+class NotionService @Inject constructor(
+    private val storageManager: StorageManager
+) {
     private val client = OkHttpClient.Builder()
         .connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .build()
 
-    private val apiKey: String get() = BuildConfig.NOTION_API_KEY
-    private val databaseId: String get() = BuildConfig.NOTION_DATABASE_ID
+    private val apiKey: String get() = storageManager.getApiKey("notion")
+    private val databaseId: String get() = storageManager.getApiKey("notion_database_id")
     private val baseUrl = "https://api.notion.com/v1"
 
     suspend fun saveNote(title: String, content: String): Boolean = withContext(Dispatchers.IO) {

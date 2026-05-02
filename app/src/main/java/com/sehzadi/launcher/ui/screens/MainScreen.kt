@@ -42,6 +42,7 @@ fun MainScreen(
     val scope = rememberCoroutineScope()
     var showAppDrawer by remember { mutableStateOf(false) }
     var showVoiceOverlay by remember { mutableStateOf(false) }
+    var showSettings by remember { mutableStateOf(false) }
 
     val systemStats by viewModel.systemStats.collectAsState()
     val currentTheme by viewModel.currentTheme.collectAsState()
@@ -100,6 +101,7 @@ fun MainScreen(
                 scope.launch { pagerState.animateScrollToPage(page) }
             },
             onVoiceClick = { showVoiceOverlay = true },
+            onSettingsClick = { showSettings = true },
             modifier = Modifier.align(Alignment.BottomCenter)
         )
 
@@ -124,6 +126,17 @@ fun MainScreen(
                 onDismiss = { showVoiceOverlay = false }
             )
         }
+
+        // Settings overlay
+        AnimatedVisibility(
+            visible = showSettings,
+            enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
+            exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+        ) {
+            SettingsScreen(
+                onDismiss = { showSettings = false }
+            )
+        }
     }
 }
 
@@ -132,6 +145,7 @@ fun BottomNavBar(
     selectedPage: Int,
     onPageSelected: (Int) -> Unit,
     onVoiceClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     NavigationBar(
@@ -179,6 +193,17 @@ fun BottomNavBar(
             onClick = { onPageSelected(2) },
             icon = { Icon(Icons.Default.Chat, "Chat") },
             label = { Text("Chat") },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = NeonCyan,
+                unselectedIconColor = Color.Gray,
+                indicatorColor = NeonCyan.copy(alpha = 0.1f)
+            )
+        )
+        NavigationBarItem(
+            selected = false,
+            onClick = onSettingsClick,
+            icon = { Icon(Icons.Default.Settings, "Settings") },
+            label = { Text("Settings") },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = NeonCyan,
                 unselectedIconColor = Color.Gray,

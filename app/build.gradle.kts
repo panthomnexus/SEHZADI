@@ -21,13 +21,7 @@ android {
             useSupportLibrary = true
         }
 
-        // API keys from local.properties or BuildConfig
-        buildConfigField("String", "GEMINI_API_KEY", "\"${project.findProperty("GEMINI_API_KEY") ?: ""}\"")
-        buildConfigField("String", "GROQ_API_KEY", "\"${project.findProperty("GROQ_API_KEY") ?: ""}\"")
-        buildConfigField("String", "HUGGINGFACE_API_KEY", "\"${project.findProperty("HUGGINGFACE_API_KEY") ?: ""}\"")
-        buildConfigField("String", "TAVILY_API_KEY", "\"${project.findProperty("TAVILY_API_KEY") ?: ""}\"")
-        buildConfigField("String", "NOTION_API_KEY", "\"${project.findProperty("NOTION_API_KEY") ?: ""}\"")
-        buildConfigField("String", "NOTION_DATABASE_ID", "\"${project.findProperty("NOTION_DATABASE_ID") ?: ""}\"")
+        // API keys are stored securely in-app via Settings → EncryptedSharedPreferences
     }
 
     buildTypes {
