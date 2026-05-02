@@ -6,8 +6,10 @@ import com.sehzadi.launcher.ai.services.HuggingFaceService
 import com.sehzadi.launcher.ai.services.TavilyService
 import com.sehzadi.launcher.ai.services.NotionService
 import com.sehzadi.launcher.apps.AppManager
+import com.sehzadi.launcher.core.ParsedIntent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -242,4 +244,146 @@ class AIEngine @Inject constructor(
     }
 
     fun getHistory(): List<Pair<String, String>> = conversationHistory.toList()
+
+    suspend fun parseUserIntent(input: String): ParsedIntent = withContext(Dispatchers.IO) {
+        val lower = input.lowercase()
+
+        // Fast local intent detection first (no API call needed)
+        val localIntent = detectLocalIntent(lower, input)
+        if (localIntent != null) return@withContext localIntent
+
+        // If local detection fails, use AI to parse intent
+        try {
+            val prompt = """Parse this user command and return JSON with "intent" and "entities".
+                |Possible intents: open_app, call, message, whatsapp, photo, video, stock, gallery, clock, system_stats, system_help, screen_assist, generate_image, web_search, save_note, generate_code, toggle_wifi, toggle_bluetooth, weather, read_messages, live_notes, chat
+                |
+                |Entities can include: app, name, text, ticker, prompt, query, title, content, language
+                |
+                |User said: "$input"
+                |
+                |Return ONLY valid JSON like: {"intent": "open_app", "entities": {"app": "WhatsApp"}}""".trimMargin()
+
+            val response = groqService.chat(prompt)
+            val jsonStr = response.trim().let {
+                if (it.startsWith("{")) it
+                else it.substringAfter("{").let { s -> "{$s" }.substringBeforeLast("}").let { s -> "$s}" }
+            }
+            val json = JSONObject(jsonStr)
+            val intent = json.optString("intent", "chat")
+            val entitiesJson = json.optJSONObject("entities")
+            val entities = mutableMapOf<String, String>()
+            entitiesJson?.keys()?.forEach { key ->
+                entities[key] = entitiesJson.optString(key, "")
+            }
+            ParsedIntent(intent = intent, text = input, entities = entities)
+        } catch (e: Exception) {
+            ParsedIntent(intent = "chat", text = input)
+        }
+    }
+
+    private fun detectLocalIntent(lower: String, original: String): ParsedIntent? {
+        // Open app patterns
+        val openPatterns = listOf("open ", "launch ", "start ", "khol", "chalu kar", "open karo")
+        for (pattern in openPatterns) {
+            if (lower.contains(pattern)) {
+                val appName = extractAppName(lower, pattern)
+                if (appName.isNotBlank()) {
+                    return ParsedIntent("open_app", original, mapOf("app" to appName))
+                }
+            }
+        }
+
+        // Call patterns
+        if (lower.contains("call lagao") || lower.contains("call karo") ||
+            lower.contains("ko call") || (lower.contains("call ") && !lower.contains("incoming"))) {
+            val name = extractContactName(lower)
+            return ParsedIntent("call", original, mapOf("name" to name))
+        }
+
+        // WhatsApp
+        if (lower.contains("whatsapp") && (lower.contains("bhej") || lower.contains("send"))) {
+            val name = extractContactName(lower)
+            val msg = lower.substringAfter("'", "").substringBefore("'", original)
+            return ParsedIntent("whatsapp", original, mapOf("name" to name, "text" to msg))
+        }
+
+        // SMS
+        if (lower.contains("message bhej") || lower.contains("sms") || lower.contains("msg bhej")) {
+            val name = extractContactName(lower)
+            val msg = lower.substringAfter("'", "").substringBefore("'", original)
+            return ParsedIntent("message", original, mapOf("name" to name, "text" to msg))
+        }
+
+        // Photo/Camera
+        if (lower.contains("photo") || lower.contains("camera") || lower.contains("pic le") || lower.contains("photo khinch") || lower.contains("photo le")) {
+            return ParsedIntent("photo", original)
+        }
+
+        // Video
+        if (lower.contains("video record") || lower.contains("video bana")) {
+            return ParsedIntent("video", original)
+        }
+
+        // Stock
+        if (lower.contains("stock") || lower.contains("share price") || lower.contains("analysis kar")) {
+            val ticker = lower.replace(Regex(".*(stock|share|analysis|price|kar|ka|ke).*"), "").trim()
+                .split(" ").firstOrNull { it.length > 1 } ?: original.split(" ").last()
+            return ParsedIntent("stock", original, mapOf("ticker" to ticker))
+        }
+
+        // Gallery
+        if (lower.contains("gallery") || lower.contains("photos dikha") || lower.contains("images dikha")) {
+            return ParsedIntent("gallery", original)
+        }
+
+        // Clock widget
+        if (lower.contains("live clock") || lower.contains("clock bana") || lower.contains("clock dikha")) {
+            return ParsedIntent("clock", original)
+        }
+
+        // System help / fix
+        if (lower.contains("phone slow") || lower.contains("slow hai") || lower.contains("fix karo") ||
+            lower.contains("problem") || lower.contains("hang")) {
+            return ParsedIntent("system_help", original)
+        }
+
+        // Screen assist
+        if (lower.contains("ye kaise") || lower.contains("screen") || lower.contains("guide") || lower.contains("help me")) {
+            return ParsedIntent("screen_assist", original, mapOf("query" to original))
+        }
+
+        // Image generation
+        if (lower.contains("image bana") || lower.contains("generate image") || lower.contains("picture bana")) {
+            val prompt = lower.replace(Regex("(image|photo|picture) (bana|banao|generate|create)"), "").trim()
+            return ParsedIntent("generate_image", original, mapOf("prompt" to prompt.ifBlank { original }))
+        }
+
+        // Web search
+        if (lower.contains("search") || lower.contains("dhundh") || lower.contains("kya hai") || lower.contains("research")) {
+            return ParsedIntent("web_search", original, mapOf("query" to original))
+        }
+
+        // Notes
+        if (lower.contains("note likh") || lower.contains("note save") || lower.contains("yaad rakh")) {
+            return ParsedIntent("save_note", original, mapOf("title" to "Note", "content" to original))
+        }
+
+        // Code generation
+        if (lower.contains("code likh") || lower.contains("code bana") || lower.contains("program bana")) {
+            val lang = detectLanguage(lower)
+            return ParsedIntent("generate_code", original, mapOf("prompt" to original, "language" to lang))
+        }
+
+        // System controls
+        if (lower.contains("wifi")) return ParsedIntent("toggle_wifi", original)
+        if (lower.contains("bluetooth")) return ParsedIntent("toggle_bluetooth", original)
+        if (lower.contains("weather") || lower.contains("mausam")) return ParsedIntent("weather", original)
+
+        // System stats
+        if (lower.contains("system") || lower.contains("stats") || lower.contains("ram") || lower.contains("battery kitni")) {
+            return ParsedIntent("system_stats", original)
+        }
+
+        return null // Let AI handle it
+    }
 }

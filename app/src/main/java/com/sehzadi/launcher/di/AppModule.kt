@@ -9,9 +9,18 @@ import com.sehzadi.launcher.ai.services.NotionService
 import com.sehzadi.launcher.ai.services.TavilyService
 import com.sehzadi.launcher.apps.AppManager
 import com.sehzadi.launcher.communication.CommunicationManager
+import com.sehzadi.launcher.core.ActionExecutor
+import com.sehzadi.launcher.core.IntentRouter
 import com.sehzadi.launcher.customization.ThemeEngine
 import com.sehzadi.launcher.health.WellnessManager
 import com.sehzadi.launcher.permissions.PermissionManager
+import com.sehzadi.launcher.services.CameraService
+import com.sehzadi.launcher.services.GalleryService
+import com.sehzadi.launcher.services.ScreenAIService
+import com.sehzadi.launcher.services.StockService
+import com.sehzadi.launcher.services.TtsService
+import com.sehzadi.launcher.services.UsageMonitorService
+import com.sehzadi.launcher.services.WidgetService
 import com.sehzadi.launcher.storage.StorageManager
 import com.sehzadi.launcher.system.SystemMonitor
 import com.sehzadi.launcher.voice.VoiceEngine
@@ -121,5 +130,94 @@ object AppModule {
         storageManager: StorageManager
     ): WellnessManager {
         return WellnessManager(context, storageManager)
+    }
+
+    // New services
+
+    @Provides
+    @Singleton
+    fun provideTtsService(@ApplicationContext context: Context): TtsService {
+        return TtsService(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGalleryService(@ApplicationContext context: Context): GalleryService {
+        return GalleryService(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCameraService(
+        @ApplicationContext context: Context,
+        galleryService: GalleryService
+    ): CameraService {
+        return CameraService(context, galleryService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideStockService(
+        geminiService: GeminiService,
+        tavilyService: TavilyService
+    ): StockService {
+        return StockService(geminiService, tavilyService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideScreenAIService(
+        @ApplicationContext context: Context,
+        geminiService: GeminiService
+    ): ScreenAIService {
+        return ScreenAIService(context, geminiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWidgetService(@ApplicationContext context: Context): WidgetService {
+        return WidgetService(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUsageMonitorService(
+        @ApplicationContext context: Context,
+        systemMonitor: SystemMonitor,
+        geminiService: GeminiService
+    ): UsageMonitorService {
+        return UsageMonitorService(context, systemMonitor, geminiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideIntentRouter(): IntentRouter {
+        return IntentRouter()
+    }
+
+    @Provides
+    @Singleton
+    fun provideActionExecutor(
+        appManager: AppManager,
+        communicationManager: CommunicationManager,
+        cameraService: CameraService,
+        stockService: StockService,
+        galleryService: GalleryService,
+        widgetService: WidgetService,
+        screenAIService: ScreenAIService,
+        usageMonitorService: UsageMonitorService,
+        ttsService: TtsService,
+        huggingFaceService: HuggingFaceService,
+        tavilyService: TavilyService,
+        groqService: GroqService,
+        notionService: NotionService,
+        storageManager: StorageManager
+    ): ActionExecutor {
+        return ActionExecutor(
+            appManager, communicationManager, cameraService, stockService,
+            galleryService, widgetService, screenAIService, usageMonitorService,
+            ttsService, huggingFaceService, tavilyService, groqService,
+            notionService, storageManager
+        )
     }
 }

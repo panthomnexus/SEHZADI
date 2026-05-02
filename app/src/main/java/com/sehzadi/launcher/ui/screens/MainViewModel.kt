@@ -7,10 +7,18 @@ import com.sehzadi.launcher.ai.AIResponse
 import com.sehzadi.launcher.apps.AppInfo
 import com.sehzadi.launcher.apps.AppManager
 import com.sehzadi.launcher.communication.CommunicationManager
+import com.sehzadi.launcher.core.ActionExecutor
+import com.sehzadi.launcher.core.IntentRouter
 import com.sehzadi.launcher.customization.HudTheme
 import com.sehzadi.launcher.customization.ThemeEngine
 import com.sehzadi.launcher.health.WellnessManager
 import com.sehzadi.launcher.permissions.PermissionManager
+import com.sehzadi.launcher.services.GalleryImage
+import com.sehzadi.launcher.services.GalleryService
+import com.sehzadi.launcher.services.TtsService
+import com.sehzadi.launcher.services.UsageMonitorService
+import com.sehzadi.launcher.services.WidgetService
+import com.sehzadi.launcher.services.WidgetType
 import com.sehzadi.launcher.storage.StorageManager
 import com.sehzadi.launcher.system.SystemMonitor
 import com.sehzadi.launcher.system.SystemStats
@@ -41,7 +49,13 @@ class MainViewModel @Inject constructor(
     private val themeEngine: ThemeEngine,
     private val storageManager: StorageManager,
     private val permissionManager: PermissionManager,
-    private val wellnessManager: WellnessManager
+    private val wellnessManager: WellnessManager,
+    private val intentRouter: IntentRouter,
+    private val actionExecutor: ActionExecutor,
+    private val ttsService: TtsService,
+    val galleryService: GalleryService,
+    val widgetService: WidgetService,
+    private val usageMonitorService: UsageMonitorService
 ) : ViewModel() {
 
     val installedApps: StateFlow<List<AppInfo>> = appManager.installedApps
@@ -63,12 +77,27 @@ class MainViewModel @Inject constructor(
     private val _searchResults = MutableStateFlow<List<AppInfo>>(emptyList())
     val searchResults: StateFlow<List<AppInfo>> = _searchResults.asStateFlow()
 
+    val galleryImages: StateFlow<List<GalleryImage>> = galleryService.images
+    val showGallery: StateFlow<Boolean> = galleryService.showGallery
+    val activeWidget: StateFlow<WidgetType> = widgetService.activeWidget
+    val showWidget: StateFlow<Boolean> = widgetService.showWidget
+
     fun initialize() {
         viewModelScope.launch {
             appManager.loadInstalledApps()
             themeEngine.initialize()
             voiceEngine.initialize()
             wellnessManager.startSession()
+
+            actionExecutor.onResultCallback = { text, imageUrl ->
+                viewModelScope.launch {
+                    _chatMessages.value = _chatMessages.value + ChatMessage(
+                        text = text,
+                        isUser = false,
+                        imageUrl = imageUrl
+                    )
+                }
+            }
 
             voiceEngine.setOnCommandReceived { command ->
                 viewModelScope.launch {
@@ -84,15 +113,21 @@ class MainViewModel @Inject constructor(
             _isAIProcessing.value = true
 
             try {
-                val response = aiEngine.processCommand(text)
-                _chatMessages.value = _chatMessages.value + ChatMessage(
-                    text = response.text,
-                    isUser = false,
-                    imageUrl = response.imageUrl
-                )
+                val parsedIntent = aiEngine.parseUserIntent(text)
 
-                if (voiceEngine.voiceState.value != com.sehzadi.launcher.voice.VoiceState.IDLE) {
-                    voiceEngine.speak(response.text)
+                if (parsedIntent.intent == "chat") {
+                    val response = aiEngine.processCommand(text)
+                    _chatMessages.value = _chatMessages.value + ChatMessage(
+                        text = response.text,
+                        isUser = false,
+                        imageUrl = response.imageUrl
+                    )
+                    if (voiceEngine.voiceState.value != com.sehzadi.launcher.voice.VoiceState.IDLE) {
+                        voiceEngine.speak(response.text)
+                    }
+                } else {
+                    val action = intentRouter.route(parsedIntent)
+                    actionExecutor.execute(action)
                 }
             } catch (e: Exception) {
                 _chatMessages.value = _chatMessages.value + ChatMessage(
@@ -157,8 +192,21 @@ class MainViewModel @Inject constructor(
         return storageManager.getApiKey(key)
     }
 
+    fun dismissGallery() {
+        galleryService.closeGallery()
+    }
+
+    fun deleteGalleryImage(path: String) {
+        galleryService.deleteImage(path)
+    }
+
+    fun dismissWidget() {
+        widgetService.dismissWidget()
+    }
+
     override fun onCleared() {
         super.onCleared()
         voiceEngine.destroy()
+        ttsService.destroy()
     }
 }

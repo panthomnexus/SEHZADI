@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -153,8 +154,28 @@ fun ChatScreen(
 fun ChatBubble(message: ChatMessage) {
     val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
+    // Entry animation for each bubble
+    val scale = remember { Animatable(0.85f) }
+    val alpha = remember { Animatable(0f) }
+    LaunchedEffect(Unit) {
+        scale.animateTo(1f, spring(dampingRatio = 0.7f, stiffness = 400f))
+    }
+    LaunchedEffect(Unit) {
+        alpha.animateTo(1f, tween(300))
+    }
+
+    // Glow effect for AI responses
+    val glowAlpha by rememberInfiniteTransition(label = "glow_${message.timestamp}").animateFloat(
+        initialValue = 0.0f,
+        targetValue = if (!message.isUser) 0.3f else 0.0f,
+        animationSpec = infiniteRepeatable(tween(3000), RepeatMode.Reverse),
+        label = "bubbleGlow"
+    )
+
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .graphicsLayer(scaleX = scale.value, scaleY = scale.value, alpha = alpha.value),
         horizontalAlignment = if (message.isUser) Alignment.End else Alignment.Start
     ) {
         Card(

@@ -1,10 +1,7 @@
 package com.sehzadi.launcher.ui.screens
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -13,21 +10,19 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Apps
-import androidx.compose.material.icons.filled.Chat
-import androidx.compose.material.icons.filled.Dashboard
-import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.sehzadi.launcher.services.WidgetType
 import com.sehzadi.launcher.ui.theme.DarkBackground
 import com.sehzadi.launcher.ui.theme.NeonCyan
 import kotlinx.coroutines.launch
@@ -46,14 +41,26 @@ fun MainScreen(
 
     val systemStats by viewModel.systemStats.collectAsState()
     val currentTheme by viewModel.currentTheme.collectAsState()
+    val showGallery by viewModel.showGallery.collectAsState()
+    val galleryImages by viewModel.galleryImages.collectAsState()
+    val showWidget by viewModel.showWidget.collectAsState()
+    val activeWidget by viewModel.activeWidget.collectAsState()
 
+    // Entry animation
+    val entryScale = remember { Animatable(0.9f) }
+    val entryAlpha = remember { Animatable(0f) }
     LaunchedEffect(Unit) {
         viewModel.initialize()
+        entryAlpha.animateTo(1f, tween(600, easing = FastOutSlowInEasing))
+    }
+    LaunchedEffect(Unit) {
+        entryScale.animateTo(1f, tween(800, easing = FastOutSlowInEasing))
     }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .scale(entryScale.value)
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
@@ -94,6 +101,16 @@ fun MainScreen(
             }
         }
 
+        // Floating widget overlay
+        if (showWidget && activeWidget != WidgetType.NONE) {
+            FloatingWidgetOverlay(
+                widgetType = activeWidget,
+                systemStats = systemStats,
+                notes = viewModel.getNotes(),
+                onDismiss = { viewModel.dismissWidget() }
+            )
+        }
+
         // Bottom navigation
         BottomNavBar(
             selectedPage = pagerState.currentPage,
@@ -108,8 +125,14 @@ fun MainScreen(
         // App Drawer overlay
         AnimatedVisibility(
             visible = showAppDrawer,
-            enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
-            exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+            enter = slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = tween(400, easing = FastOutSlowInEasing)
+            ) + fadeIn(tween(300)),
+            exit = slideOutVertically(
+                targetOffsetY = { it },
+                animationSpec = tween(300, easing = FastOutSlowInEasing)
+            ) + fadeOut(tween(200))
         ) {
             AppDrawerScreen(
                 onDismiss = { showAppDrawer = false }
@@ -119,8 +142,14 @@ fun MainScreen(
         // Voice overlay
         AnimatedVisibility(
             visible = showVoiceOverlay,
-            enter = fadeIn(),
-            exit = fadeOut()
+            enter = scaleIn(
+                animationSpec = tween(400, easing = FastOutSlowInEasing),
+                initialScale = 0.8f
+            ) + fadeIn(tween(300)),
+            exit = scaleOut(
+                animationSpec = tween(300),
+                targetScale = 0.8f
+            ) + fadeOut(tween(200))
         ) {
             VoiceOverlayScreen(
                 onDismiss = { showVoiceOverlay = false }
@@ -130,11 +159,36 @@ fun MainScreen(
         // Settings overlay
         AnimatedVisibility(
             visible = showSettings,
-            enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
-            exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+            enter = slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = tween(400, easing = FastOutSlowInEasing)
+            ) + fadeIn(tween(300)),
+            exit = slideOutVertically(
+                targetOffsetY = { it },
+                animationSpec = tween(300)
+            ) + fadeOut(tween(200))
         ) {
             SettingsScreen(
                 onDismiss = { showSettings = false }
+            )
+        }
+
+        // Gallery overlay
+        AnimatedVisibility(
+            visible = showGallery,
+            enter = slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = tween(400, easing = FastOutSlowInEasing)
+            ) + fadeIn(tween(300)),
+            exit = slideOutVertically(
+                targetOffsetY = { it },
+                animationSpec = tween(300)
+            ) + fadeOut(tween(200))
+        ) {
+            GalleryScreen(
+                images = galleryImages,
+                onDismiss = { viewModel.dismissGallery() },
+                onDelete = { path -> viewModel.deleteGalleryImage(path) }
             )
         }
     }
