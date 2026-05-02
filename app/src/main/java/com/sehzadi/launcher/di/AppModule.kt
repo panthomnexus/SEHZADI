@@ -23,6 +23,10 @@ import com.sehzadi.launcher.services.StockService
 import com.sehzadi.launcher.services.TtsService
 import com.sehzadi.launcher.services.UsageMonitorService
 import com.sehzadi.launcher.services.WidgetService
+import com.sehzadi.launcher.ai.models.DeviceCapabilityDetector
+import com.sehzadi.launcher.ai.models.HybridAIEngine
+import com.sehzadi.launcher.ai.models.ModelManager
+import com.sehzadi.launcher.ai.models.ProactiveAIService
 import com.sehzadi.launcher.storage.StorageManager
 import com.sehzadi.launcher.system.SystemMonitor
 import com.sehzadi.launcher.voice.VoiceEngine
@@ -233,5 +237,39 @@ object AppModule {
     @Singleton
     fun provideSettingsStore(@ApplicationContext context: Context): SettingsStore {
         return SettingsStore(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeviceCapabilityDetector(@ApplicationContext context: Context): DeviceCapabilityDetector {
+        return DeviceCapabilityDetector(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideModelManager(
+        @ApplicationContext context: Context,
+        capabilityDetector: DeviceCapabilityDetector
+    ): ModelManager {
+        return ModelManager(context, capabilityDetector)
+    }
+
+    @Provides
+    @Singleton
+    fun provideHybridAIEngine(
+        @ApplicationContext context: Context,
+        modelManager: ModelManager,
+        aiEngine: AIEngine
+    ): HybridAIEngine {
+        return HybridAIEngine(context, modelManager, aiEngine)
+    }
+
+    @Provides
+    @Singleton
+    fun provideProactiveAIService(
+        @ApplicationContext context: Context,
+        ttsService: TtsService
+    ): ProactiveAIService {
+        return ProactiveAIService(context, ttsService)
     }
 }

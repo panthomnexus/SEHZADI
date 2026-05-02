@@ -21,6 +21,12 @@ import com.sehzadi.launcher.services.TtsService
 import com.sehzadi.launcher.services.UsageMonitorService
 import com.sehzadi.launcher.services.WidgetService
 import com.sehzadi.launcher.services.WidgetType
+import com.sehzadi.launcher.ai.models.DeviceCapability
+import com.sehzadi.launcher.ai.models.HybridAIEngine
+import com.sehzadi.launcher.ai.models.ModelManager
+import com.sehzadi.launcher.ai.models.ModelState
+import com.sehzadi.launcher.ai.models.ProactiveAIService
+import com.sehzadi.launcher.ai.models.ProactiveSuggestion
 import com.sehzadi.launcher.storage.StorageManager
 import com.sehzadi.launcher.system.SystemMonitor
 import com.sehzadi.launcher.system.SystemStats
@@ -59,7 +65,10 @@ class MainViewModel @Inject constructor(
     val widgetService: WidgetService,
     private val usageMonitorService: UsageMonitorService,
     private val memoryStore: MemoryStore,
-    private val settingsStore: SettingsStore
+    private val settingsStore: SettingsStore,
+    val modelManager: ModelManager,
+    private val hybridAIEngine: HybridAIEngine,
+    val proactiveAIService: ProactiveAIService
 ) : ViewModel() {
 
     val installedApps: StateFlow<List<AppInfo>> = appManager.installedApps
@@ -85,6 +94,17 @@ class MainViewModel @Inject constructor(
     val showGallery: StateFlow<Boolean> = galleryService.showGallery
     val activeWidget: StateFlow<WidgetType> = widgetService.activeWidget
     val showWidget: StateFlow<Boolean> = widgetService.showWidget
+
+    // Model Manager
+    val aiModels: StateFlow<List<ModelState>> = modelManager.models
+    val activeModel: StateFlow<ModelState?> = modelManager.activeModel
+    val deviceCapability: StateFlow<DeviceCapability?> = modelManager.deviceCapability
+
+    // Proactive AI
+    val proactiveSuggestions: StateFlow<List<ProactiveSuggestion>> = proactiveAIService.suggestions
+
+    // AI Source info
+    val aiSourceInfo: String get() = hybridAIEngine.getCurrentSource()
 
     fun initialize() {
         viewModelScope.launch {
@@ -229,6 +249,35 @@ class MainViewModel @Inject constructor(
                 "permissions" -> {} // handled by UI
             }
         }
+    }
+
+    // Model Manager functions
+    fun downloadModel(modelId: String) {
+        viewModelScope.launch {
+            modelManager.downloadModel(modelId)
+        }
+    }
+
+    fun loadModel(modelId: String) {
+        viewModelScope.launch {
+            modelManager.loadModel(modelId)
+        }
+    }
+
+    fun unloadModel(modelId: String) {
+        viewModelScope.launch {
+            modelManager.unloadModel(modelId)
+        }
+    }
+
+    fun deleteModel(modelId: String) {
+        viewModelScope.launch {
+            modelManager.deleteModel(modelId)
+        }
+    }
+
+    fun dismissSuggestion(id: String) {
+        proactiveAIService.dismissSuggestion(id)
     }
 
     override fun onCleared() {

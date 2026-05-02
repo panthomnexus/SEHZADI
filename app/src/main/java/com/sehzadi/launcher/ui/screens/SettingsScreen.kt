@@ -39,7 +39,8 @@ data class ApiKeyConfig(
 fun SettingsScreen(
     viewModel: MainViewModel = hiltViewModel(),
     onDismiss: () -> Unit,
-    onOpenPermissions: () -> Unit = {}
+    onOpenPermissions: () -> Unit = {},
+    onOpenModelManager: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
@@ -216,6 +217,31 @@ fun SettingsScreen(
                     Column(modifier = Modifier.weight(1f)) {
                         Text("Manage Permissions", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = TextWhite)
                         Text("Mic, Camera, Contacts, Phone, Storage", fontSize = 11.sp, color = TextDim)
+                    }
+                    Icon(Icons.Default.ChevronRight, "Open", tint = TextDim)
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // AI Model Manager button
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onOpenModelManager() },
+                colors = CardDefaults.cardColors(containerColor = DarkCard.copy(alpha = 0.8f)),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(Icons.Default.Memory, "AI Models", tint = NeonCyan, modifier = Modifier.size(24.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("AI Model Manager", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = TextWhite)
+                        Text("Download, load, manage on-device AI models", fontSize = 11.sp, color = TextDim)
                     }
                     Icon(Icons.Default.ChevronRight, "Open", tint = TextDim)
                 }

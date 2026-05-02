@@ -1,0 +1,38 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <!-- Brain outline left -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF00F0FF"
+        android:strokeWidth="2"
+        android:pathData="M32,10C24,10 18,14 16,20C12,22 10,26 10,32C10,38 12,42 16,44C18,50 24,54 32,54"/>
+    <!-- Brain outline right -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF00F0FF"
+        android:strokeWidth="2"
+        android:pathData="M32,10C40,10 46,14 48,20C52,22 54,26 54,32C54,38 52,42 48,44C46,50 40,54 32,54"/>
+    <!-- Center line -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF8B00FF"
+        android:strokeWidth="1.5"
+        android:pathData="M32,14L32,50"/>
+    <!-- Neural nodes -->
+    <path android:fillColor="#FF00F0FF" android:pathData="M24,24m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0"/>
+    <path android:fillColor="#FF00F0FF" android:pathData="M40,24m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0"/>
+    <path android:fillColor="#FF8B00FF" android:pathData="M20,32m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0"/>
+    <path android:fillColor="#FF8B00FF" android:pathData="M44,32m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0"/>
+    <path android:fillColor="#FF00F0FF" android:pathData="M24,40m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0"/>
+    <path android:fillColor="#FF00F0FF" android:pathData="M40,40m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0"/>
+    <path android:fillColor="#FF0066FF" android:pathData="M32,32m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0"/>
+    <!-- Connections -->
+    <path android:fillColor="#00000000" android:strokeColor="#FF0066FF" android:strokeWidth="0.8"
+        android:pathData="M24,24L32,32L40,24M20,32L32,32L44,32M24,40L32,32L40,40"/>
+    <!-- Signal waves -->
+    <path android:fillColor="#00000000" android:strokeColor="#FF00FF88" android:strokeWidth="1"
+        android:pathData="M32,6C32,6 36,8 36,10M32,6C32,6 28,8 28,10"/>
+</vector>

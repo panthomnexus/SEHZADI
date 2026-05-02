@@ -39,6 +39,7 @@ fun MainScreen(
     var showVoiceOverlay by remember { mutableStateOf(false) }
     var showSettings by remember { mutableStateOf(false) }
     var showPermissions by remember { mutableStateOf(false) }
+    var showModelManager by remember { mutableStateOf(false) }
 
     val systemStats by viewModel.systemStats.collectAsState()
     val currentTheme by viewModel.currentTheme.collectAsState()
@@ -46,6 +47,9 @@ fun MainScreen(
     val galleryImages by viewModel.galleryImages.collectAsState()
     val showWidget by viewModel.showWidget.collectAsState()
     val activeWidget by viewModel.activeWidget.collectAsState()
+    val aiModels by viewModel.aiModels.collectAsState()
+    val activeModel by viewModel.activeModel.collectAsState()
+    val deviceCapability by viewModel.deviceCapability.collectAsState()
 
     // Entry animation
     val entryScale = remember { Animatable(0.9f) }
@@ -174,6 +178,10 @@ fun MainScreen(
                 onOpenPermissions = {
                     showSettings = false
                     showPermissions = true
+                },
+                onOpenModelManager = {
+                    showSettings = false
+                    showModelManager = true
                 }
             )
         }
@@ -211,6 +219,30 @@ fun MainScreen(
         ) {
             PermissionsScreen(
                 onDismiss = { showPermissions = false }
+            )
+        }
+
+        // Model Manager overlay
+        AnimatedVisibility(
+            visible = showModelManager,
+            enter = slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = tween(400, easing = FastOutSlowInEasing)
+            ) + fadeIn(tween(300)),
+            exit = slideOutVertically(
+                targetOffsetY = { it },
+                animationSpec = tween(300)
+            ) + fadeOut(tween(200))
+        ) {
+            ModelManagerScreen(
+                models = aiModels,
+                deviceCapability = deviceCapability,
+                activeModel = activeModel,
+                onDownload = { viewModel.downloadModel(it) },
+                onLoad = { viewModel.loadModel(it) },
+                onUnload = { viewModel.unloadModel(it) },
+                onDelete = { viewModel.deleteModel(it) },
+                onDismiss = { showModelManager = false }
             )
         }
     }

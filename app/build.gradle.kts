@@ -118,15 +118,39 @@ dependencies {
     // Coil for image loading
     implementation("io.coil-kt:coil-compose:2.5.0")
 
+    // Lottie Animations
+    implementation("com.airbnb.android:lottie-compose:6.3.0")
+
+    // ExoPlayer for media playback
+    implementation("androidx.media3:media3-exoplayer:1.2.1")
+    implementation("androidx.media3:media3-ui:1.2.1")
+    implementation("androidx.media3:media3-session:1.2.1")
+
+    // CameraX
+    implementation("androidx.camera:camera-core:1.3.1")
+    implementation("androidx.camera:camera-camera2:1.3.1")
+    implementation("androidx.camera:camera-lifecycle:1.3.1")
+    implementation("androidx.camera:camera-view:1.3.1")
+
     // Accompanist
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.34.0")
     implementation("com.google.accompanist:accompanist-permissions:0.34.0")
 
+    // Glide for image processing
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
+
     // Work Manager for background tasks
     implementation("androidx.work:work-runtime-ktx:2.9.0")
 
+    // MLKit for on-device text recognition
+    implementation("com.google.mlkit:text-recognition:16.0.0")
+
     // Usage Stats
     implementation("androidx.appcompat:appcompat:1.6.1")
+
+    // Splash Screen
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     // Testing
     testImplementation("junit:junit:4.13.2")
