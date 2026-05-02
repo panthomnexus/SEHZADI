@@ -41,6 +41,11 @@ class IntentRouter @Inject constructor() {
             "weather" -> Action.ShowWeather
             "read_messages" -> Action.ReadMessages(intent.entities["name"] ?: "")
             "live_notes" -> Action.ShowLiveNotes
+            "save_memory", "remember" -> Action.SaveMemory(
+                key = intent.entities["key"] ?: "note",
+                value = intent.entities["value"] ?: intent.text
+            )
+            "permissions" -> Action.ShowPermissions
             else -> Action.Unknown
         }
     }

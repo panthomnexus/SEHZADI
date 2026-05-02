@@ -120,7 +120,8 @@ class AIEngine @Inject constructor(
                 addToHistory(input, response)
                 AIResponse(response)
             } catch (e2: Exception) {
-                AIResponse("Sorry, AI services are currently unavailable. Error: ${e2.message}")
+                val localResponse = getLocalFallbackResponse(input)
+                AIResponse(localResponse)
             }
         }
     }
@@ -368,6 +369,19 @@ class AIEngine @Inject constructor(
             return ParsedIntent("save_note", original, mapOf("title" to "Note", "content" to original))
         }
 
+        // Memory / Remember
+        if (lower.contains("remember") || lower.contains("yaad kar")) {
+            val after = original.substringAfter("remember", original).substringAfter("yaad kar", original).trim()
+            val key = after.substringBefore(":", "preference").trim()
+            val value = after.substringAfter(":", after).trim()
+            return ParsedIntent("save_memory", original, mapOf("key" to key, "value" to value))
+        }
+
+        // Permissions
+        if (lower.contains("permission")) {
+            return ParsedIntent("permissions", original)
+        }
+
         // Code generation
         if (lower.contains("code likh") || lower.contains("code bana") || lower.contains("program bana")) {
             val lang = detectLanguage(lower)
@@ -385,5 +399,35 @@ class AIEngine @Inject constructor(
         }
 
         return null // Let AI handle it
+    }
+
+    private fun getLocalFallbackResponse(input: String): String {
+        val lower = input.lowercase()
+        return when {
+            lower.contains("weather") || lower.contains("mausam") ->
+                "Weather command detected. API key set karo Settings mein — phir live weather milega."
+            lower.contains("open") ->
+                "App open command detected. Main launcher manager se route karunga."
+            lower.contains("call") ->
+                "Call command detected. Contact confirm hone ke baad call lagunga."
+            lower.contains("message") || lower.contains("sms") || lower.contains("whatsapp") ->
+                "Message command detected. Contact resolve karke message bhejunga."
+            lower.contains("photo") || lower.contains("camera") ->
+                "Camera command detected. Photo capture karke gallery mein save karunga."
+            lower.contains("clock") ->
+                "Live clock widget command detected. HUD pe dikhaunga."
+            lower.contains("stock") ->
+                "Stock analysis command detected. API key configure karo for live data."
+            lower.contains("help") || lower.contains("kaise") ->
+                "Main aapki help karne ke liye ready hoon. Koi bhi command bolo — app kholna, call karna, photo lena, ya AI se baat karna."
+            lower.contains("hello") || lower.contains("hi") || lower.contains("namaste") ->
+                "Namaste! Main SEHZADI hoon — aapka AI assistant. Kya karu aapke liye?"
+            lower.contains("thank") || lower.contains("shukriya") || lower.contains("dhanyavaad") ->
+                "Shukriya! Kuch aur help chahiye toh batao."
+            conversationHistory.isNotEmpty() ->
+                "Main aapki preferences yaad rakh raha hoon. API keys Settings mein configure karo for full AI power."
+            else ->
+                "Main ready hoon. API keys set karo Settings mein for Gemini/Groq AI responses. Tab tak basic commands kaam karenge."
+        }
     }
 }

@@ -38,7 +38,8 @@ data class ApiKeyConfig(
 @Composable
 fun SettingsScreen(
     viewModel: MainViewModel = hiltViewModel(),
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    onOpenPermissions: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
@@ -160,6 +161,64 @@ fun SettingsScreen(
                     }
                 )
                 Spacer(modifier = Modifier.height(12.dp))
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Controls Section
+            Text(
+                "CONTROLS",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = NeonCyan.copy(alpha = 0.7f),
+                letterSpacing = 3.sp,
+                modifier = Modifier.padding(start = 8.dp)
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+
+            var wakeWordEnabled by remember { mutableStateOf(true) }
+            var ttsEnabled by remember { mutableStateOf(true) }
+
+            SettingsToggleCard(
+                title = "Wake Word (Hacknuma)",
+                description = "Voice se activate karo — 'Hacknuma' bolo",
+                icon = Icons.Default.Mic,
+                checked = wakeWordEnabled,
+                onCheckedChange = { wakeWordEnabled = it }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            SettingsToggleCard(
+                title = "Text-to-Speech (TTS)",
+                description = "AI responses bolke sunaye",
+                icon = Icons.Default.VolumeUp,
+                checked = ttsEnabled,
+                onCheckedChange = { ttsEnabled = it }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Permissions button
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onOpenPermissions() },
+                colors = CardDefaults.cardColors(containerColor = DarkCard.copy(alpha = 0.8f)),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(Icons.Default.Security, "Permissions", tint = NeonPurple, modifier = Modifier.size(24.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("Manage Permissions", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = TextWhite)
+                        Text("Mic, Camera, Contacts, Phone, Storage", fontSize = 11.sp, color = TextDim)
+                    }
+                    Icon(Icons.Default.ChevronRight, "Open", tint = TextDim)
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -333,6 +392,45 @@ fun ThemeCard(
             if (isSelected) {
                 Icon(Icons.Default.CheckCircle, "Selected", tint = theme.primaryColor, modifier = Modifier.size(20.dp))
             }
+        }
+    }
+}
+
+@Composable
+fun SettingsToggleCard(
+    title: String,
+    description: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = DarkCard.copy(alpha = 0.8f)),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(icon, title, tint = NeonCyan, modifier = Modifier.size(24.dp))
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(title, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = TextWhite)
+                Text(description, fontSize = 11.sp, color = TextDim)
+            }
+            Switch(
+                checked = checked,
+                onCheckedChange = onCheckedChange,
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = NeonCyan,
+                    checkedTrackColor = NeonCyan.copy(alpha = 0.3f),
+                    uncheckedThumbColor = TextDim,
+                    uncheckedTrackColor = DarkCard
+                )
+            )
         }
     }
 }

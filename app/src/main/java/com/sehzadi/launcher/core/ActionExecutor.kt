@@ -236,6 +236,17 @@ class ActionExecutor @Inject constructor(
                 onResultCallback?.invoke("Notes widget shown.", null)
             }
 
+            is Action.SaveMemory -> {
+                storageManager.saveNote(action.key, action.key, action.value)
+                ttsService.speak("Yaad rakh liya: ${action.key}")
+                onResultCallback?.invoke("Memory saved: ${action.key} = ${action.value}", null)
+            }
+
+            Action.ShowPermissions -> {
+                ttsService.speak("Permissions screen dikha raha hoon.")
+                onResultCallback?.invoke("Opening permissions manager.", null)
+            }
+
             Action.Unknown -> {
                 ttsService.speak("Samajh nahi aaya. Dobara bol do.")
                 onResultCallback?.invoke("Command not recognized.", null)

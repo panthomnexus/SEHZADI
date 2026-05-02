@@ -28,5 +28,7 @@ sealed class Action {
     object ShowWeather : Action()
     data class ReadMessages(val contactName: String) : Action()
     object ShowLiveNotes : Action()
+    data class SaveMemory(val key: String, val value: String) : Action()
+    object ShowPermissions : Action()
     object Unknown : Action()
 }

@@ -107,7 +107,55 @@ fun HomeScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Quick Actions
+        Text(
+            text = "QUICK ACTIONS",
+            fontSize = 11.sp,
+            color = TextDim,
+            letterSpacing = 3.sp,
+            modifier = Modifier.align(Alignment.Start)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            QuickActionButton(
+                icon = Icons.Default.Call,
+                label = "Call",
+                color = NeonGreen,
+                onClick = { viewModel.executeQuickAction("call") }
+            )
+            QuickActionButton(
+                icon = Icons.Default.Sms,
+                label = "Message",
+                color = NeonCyan,
+                onClick = { viewModel.executeQuickAction("message") }
+            )
+            QuickActionButton(
+                icon = Icons.Default.CameraAlt,
+                label = "Photo",
+                color = NeonBlue,
+                onClick = { viewModel.executeQuickAction("photo") }
+            )
+            QuickActionButton(
+                icon = Icons.Default.Search,
+                label = "Search",
+                color = NeonPurple,
+                onClick = { viewModel.executeQuickAction("search") }
+            )
+            QuickActionButton(
+                icon = Icons.Default.AccessTime,
+                label = "Clock",
+                color = NeonPink,
+                onClick = { viewModel.executeQuickAction("clock") }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Frequent apps (top 8)
         val frequentApps = apps.filter { !it.isHidden }.take(8)
@@ -180,6 +228,34 @@ fun QuickStat(
             color = color,
             fontWeight = FontWeight.Medium
         )
+    }
+}
+
+@Composable
+fun QuickActionButton(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    color: Color,
+    onClick: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .clip(RoundedCornerShape(12.dp))
+            .clickable(onClick = onClick)
+            .padding(8.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(44.dp)
+                .clip(CircleShape)
+                .background(color.copy(alpha = 0.15f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(icon, contentDescription = label, tint = color, modifier = Modifier.size(22.dp))
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(label, fontSize = 10.sp, color = TextDim)
     }
 }
 

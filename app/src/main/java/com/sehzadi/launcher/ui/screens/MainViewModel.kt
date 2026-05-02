@@ -10,6 +10,8 @@ import com.sehzadi.launcher.communication.CommunicationManager
 import com.sehzadi.launcher.core.ActionExecutor
 import com.sehzadi.launcher.core.IntentRouter
 import com.sehzadi.launcher.customization.HudTheme
+import com.sehzadi.launcher.data.MemoryStore
+import com.sehzadi.launcher.data.SettingsStore
 import com.sehzadi.launcher.customization.ThemeEngine
 import com.sehzadi.launcher.health.WellnessManager
 import com.sehzadi.launcher.permissions.PermissionManager
@@ -55,7 +57,9 @@ class MainViewModel @Inject constructor(
     private val ttsService: TtsService,
     val galleryService: GalleryService,
     val widgetService: WidgetService,
-    private val usageMonitorService: UsageMonitorService
+    private val usageMonitorService: UsageMonitorService,
+    private val memoryStore: MemoryStore,
+    private val settingsStore: SettingsStore
 ) : ViewModel() {
 
     val installedApps: StateFlow<List<AppInfo>> = appManager.installedApps
@@ -202,6 +206,29 @@ class MainViewModel @Inject constructor(
 
     fun dismissWidget() {
         widgetService.dismissWidget()
+    }
+
+    fun saveMemory(key: String, value: String) {
+        viewModelScope.launch {
+            memoryStore.save(key, value)
+        }
+    }
+
+    fun executeQuickAction(action: String) {
+        viewModelScope.launch {
+            when (action.lowercase()) {
+                "call" -> sendMessage("call")
+                "message" -> sendMessage("message bhejo")
+                "photo" -> sendMessage("photo le lo")
+                "search" -> sendMessage("web search")
+                "memory" -> sendMessage("mera memory dikhao")
+                "clock" -> sendMessage("live clock bana do")
+                "gallery" -> sendMessage("gallery dikha do")
+                "stock" -> sendMessage("stock analysis")
+                "settings" -> {} // handled by UI
+                "permissions" -> {} // handled by UI
+            }
+        }
     }
 
     override fun onCleared() {

@@ -9,6 +9,8 @@ import com.sehzadi.launcher.ai.services.NotionService
 import com.sehzadi.launcher.ai.services.TavilyService
 import com.sehzadi.launcher.apps.AppManager
 import com.sehzadi.launcher.communication.CommunicationManager
+import com.sehzadi.launcher.data.MemoryStore
+import com.sehzadi.launcher.data.SettingsStore
 import com.sehzadi.launcher.core.ActionExecutor
 import com.sehzadi.launcher.core.IntentRouter
 import com.sehzadi.launcher.customization.ThemeEngine
@@ -219,5 +221,17 @@ object AppModule {
             ttsService, huggingFaceService, tavilyService, groqService,
             notionService, storageManager
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideMemoryStore(@ApplicationContext context: Context): MemoryStore {
+        return MemoryStore(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSettingsStore(@ApplicationContext context: Context): SettingsStore {
+        return SettingsStore(context)
     }
 }

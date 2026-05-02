@@ -38,6 +38,7 @@ fun MainScreen(
     var showAppDrawer by remember { mutableStateOf(false) }
     var showVoiceOverlay by remember { mutableStateOf(false) }
     var showSettings by remember { mutableStateOf(false) }
+    var showPermissions by remember { mutableStateOf(false) }
 
     val systemStats by viewModel.systemStats.collectAsState()
     val currentTheme by viewModel.currentTheme.collectAsState()
@@ -169,7 +170,11 @@ fun MainScreen(
             ) + fadeOut(tween(200))
         ) {
             SettingsScreen(
-                onDismiss = { showSettings = false }
+                onDismiss = { showSettings = false },
+                onOpenPermissions = {
+                    showSettings = false
+                    showPermissions = true
+                }
             )
         }
 
@@ -189,6 +194,23 @@ fun MainScreen(
                 images = galleryImages,
                 onDismiss = { viewModel.dismissGallery() },
                 onDelete = { path -> viewModel.deleteGalleryImage(path) }
+            )
+        }
+
+        // Permissions overlay
+        AnimatedVisibility(
+            visible = showPermissions,
+            enter = slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = tween(400, easing = FastOutSlowInEasing)
+            ) + fadeIn(tween(300)),
+            exit = slideOutVertically(
+                targetOffsetY = { it },
+                animationSpec = tween(300)
+            ) + fadeOut(tween(200))
+        ) {
+            PermissionsScreen(
+                onDismiss = { showPermissions = false }
             )
         }
     }
