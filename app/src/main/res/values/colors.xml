@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="neon_cyan">#FF00F0FF</color>
+    <color name="neon_blue">#FF0066FF</color>
+    <color name="neon_purple">#FF8B00FF</color>
+    <color name="neon_pink">#FFFF00AA</color>
+    <color name="neon_green">#FF00FF88</color>
+    <color name="dark_background">#FF0A0A1A</color>
+    <color name="dark_surface">#FF111128</color>
+    <color name="dark_card">#FF1A1A3E</color>
+</resources>
