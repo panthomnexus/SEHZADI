@@ -1,0 +1,60 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Background circle -->
+    <path
+        android:fillColor="#FF0A0A1A"
+        android:pathData="M54,54m-50,0a50,50 0,1 1,100 0a50,50 0,1 1,-100 0"/>
+    <!-- Outer ring -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF00F0FF"
+        android:strokeWidth="2"
+        android:pathData="M54,54m-44,0a44,44 0,1 1,88 0a44,44 0,1 1,-88 0"/>
+    <!-- Inner ring -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF0066FF"
+        android:strokeWidth="1.5"
+        android:pathData="M54,54m-36,0a36,36 0,1 1,72 0a36,36 0,1 1,-72 0"/>
+    <!-- AI brain icon -->
+    <path
+        android:fillColor="#FF00F0FF"
+        android:pathData="M54,32c-12,0 -20,8 -20,20c0,12 8,20 20,20c12,0 20,-8 20,-20c0,-12 -8,-20 -20,-20zM54,36c8.8,0 16,7.2 16,16c0,8.8 -7.2,16 -16,16c-8.8,0 -16,-7.2 -16,-16c0,-8.8 7.2,-16 16,-16z"/>
+    <!-- Center dot -->
+    <path
+        android:fillColor="#FF00F0FF"
+        android:pathData="M54,54m-6,0a6,6 0,1 1,12 0a6,6 0,1 1,-12 0"/>
+    <!-- Neural connections -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF8B00FF"
+        android:strokeWidth="1"
+        android:pathData="M54,36L54,48M54,60L54,72M36,54L48,54M60,54L72,54"/>
+    <!-- Diagonal connections -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF8B00FF"
+        android:strokeWidth="0.8"
+        android:pathData="M42,42L50,50M58,50L66,42M42,66L50,58M58,58L66,66"/>
+    <!-- S letter outline -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF00FF88"
+        android:strokeWidth="1.5"
+        android:pathData="M62,42c0,-3.3 -3.6,-6 -8,-6s-8,2.7 -8,6c0,3.3 3.6,6 8,6s8,2.7 8,6c0,3.3 -3.6,6 -8,6s-8,-2.7 -8,-6"/>
+    <!-- Top decoration arcs -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF00F0FF"
+        android:strokeWidth="0.8"
+        android:pathData="M34,28a30,30 0,0 1,40 0"/>
+    <!-- Bottom decoration arcs -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF00F0FF"
+        android:strokeWidth="0.8"
+        android:pathData="M34,80a30,30 0,0 0,40 0"/>
+</vector>
