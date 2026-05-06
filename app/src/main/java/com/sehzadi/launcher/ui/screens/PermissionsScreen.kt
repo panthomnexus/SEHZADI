@@ -154,12 +154,14 @@ fun PermissionsScreen(
                         "PERMISSIONS",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
+                        fontFamily = OrbitronFont,
                         color = NeonCyan,
                         letterSpacing = 3.sp
                     )
                     Text(
                         "Grant permissions for full experience",
                         fontSize = 12.sp,
+                        fontFamily = RajdhaniFont,
                         color = TextDim
                     )
                 }
@@ -268,6 +270,7 @@ fun PermissionCard(
                     Text(
                         item.title,
                         fontSize = 15.sp,
+                        fontFamily = RajdhaniFont,
                         fontWeight = FontWeight.SemiBold,
                         color = TextWhite
                     )
@@ -285,6 +288,7 @@ fun PermissionCard(
                 Text(
                     item.description,
                     fontSize = 12.sp,
+                    fontFamily = RajdhaniFont,
                     color = TextDim,
                     lineHeight = 16.sp
                 )
@@ -301,7 +305,7 @@ fun PermissionCard(
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
                     shape = RoundedCornerShape(8.dp)
                 ) {
-                    Text("Grant", fontSize = 12.sp)
+                    Text("Grant", fontSize = 12.sp, fontFamily = RajdhaniFont)
                 }
             }
         }

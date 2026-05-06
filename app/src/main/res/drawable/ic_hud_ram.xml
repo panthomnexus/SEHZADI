@@ -1,0 +1,17 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="32"
+    android:viewportHeight="32">
+    <path android:fillColor="#00000000" android:strokeColor="#FF8B00FF" android:strokeWidth="1.5"
+        android:pathData="M4,10L28,10L28,22L4,22Z"/>
+    <!-- Memory chips -->
+    <path android:fillColor="#FF8B00FF" android:pathData="M7,13L11,13L11,19L7,19Z"/>
+    <path android:fillColor="#FF8B00FF" android:pathData="M14,13L18,13L18,19L14,19Z"/>
+    <path android:fillColor="#FF8B00FF" android:pathData="M21,13L25,13L25,19L21,19Z"/>
+    <!-- Bottom pins -->
+    <path android:fillColor="#00000000" android:strokeColor="#FF8B00FF" android:strokeWidth="1"
+        android:pathData="M8,22L8,26M12,22L12,26M16,22L16,26M20,22L20,26M24,22L24,26"/>
+    <!-- Notch -->
+    <path android:fillColor="#FF0A0A1A" android:pathData="M14,8L18,8L18,10L14,10Z"/>
+</vector>

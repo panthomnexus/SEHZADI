@@ -123,6 +123,7 @@ fun SettingsScreen(
                     "SETTINGS",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
+                    fontFamily = OrbitronFont,
                     color = NeonCyan,
                     letterSpacing = 4.sp
                 )
@@ -135,6 +136,7 @@ fun SettingsScreen(
                 "API KEYS",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
+                fontFamily = OrbitronFont,
                 color = NeonCyan.copy(alpha = 0.7f),
                 letterSpacing = 3.sp,
                 modifier = Modifier.padding(start = 8.dp)
@@ -142,6 +144,7 @@ fun SettingsScreen(
             Text(
                 "Enter your API keys below. Get keys from the links provided.",
                 fontSize = 12.sp,
+                fontFamily = RajdhaniFont,
                 color = TextDim,
                 modifier = Modifier.padding(start = 8.dp, top = 4.dp)
             )
@@ -171,6 +174,7 @@ fun SettingsScreen(
                 "CONTROLS",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
+                fontFamily = OrbitronFont,
                 color = NeonCyan.copy(alpha = 0.7f),
                 letterSpacing = 3.sp,
                 modifier = Modifier.padding(start = 8.dp)
@@ -215,8 +219,8 @@ fun SettingsScreen(
                     Icon(Icons.Default.Security, "Permissions", tint = NeonPurple, modifier = Modifier.size(24.dp))
                     Spacer(modifier = Modifier.width(12.dp))
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Manage Permissions", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = TextWhite)
-                        Text("Mic, Camera, Contacts, Phone, Storage", fontSize = 11.sp, color = TextDim)
+                        Text("Manage Permissions", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, fontFamily = RajdhaniFont, color = TextWhite)
+                        Text("Mic, Camera, Contacts, Phone, Storage", fontSize = 11.sp, fontFamily = RajdhaniFont, color = TextDim)
                     }
                     Icon(Icons.Default.ChevronRight, "Open", tint = TextDim)
                 }
@@ -240,8 +244,8 @@ fun SettingsScreen(
                     Icon(Icons.Default.Memory, "AI Models", tint = NeonCyan, modifier = Modifier.size(24.dp))
                     Spacer(modifier = Modifier.width(12.dp))
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("AI Model Manager", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = TextWhite)
-                        Text("Download, load, manage on-device AI models", fontSize = 11.sp, color = TextDim)
+                        Text("AI Model Manager", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, fontFamily = RajdhaniFont, color = TextWhite)
+                        Text("Download, load, manage on-device AI models", fontSize = 11.sp, fontFamily = RajdhaniFont, color = TextDim)
                     }
                     Icon(Icons.Default.ChevronRight, "Open", tint = TextDim)
                 }
@@ -254,6 +258,7 @@ fun SettingsScreen(
                 "THEMES",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
+                fontFamily = OrbitronFont,
                 color = NeonCyan.copy(alpha = 0.7f),
                 letterSpacing = 3.sp,
                 modifier = Modifier.padding(start = 8.dp)
@@ -297,7 +302,7 @@ fun SettingsScreen(
             ) {
                 Icon(Icons.Default.Save, "Save", modifier = Modifier.size(20.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("SAVE & RESTART", fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
+                Text("SAVE & RESTART", fontWeight = FontWeight.Bold, fontFamily = OrbitronFont, letterSpacing = 2.sp)
             }
 
             Spacer(modifier = Modifier.height(120.dp))
@@ -326,8 +331,8 @@ fun ApiKeyInputCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(config.label, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = TextWhite)
-                    Text(config.hint, fontSize = 11.sp, color = TextDim)
+                    Text(config.label, fontSize = 14.sp, fontWeight = FontWeight.Bold, fontFamily = RajdhaniFont, color = TextWhite)
+                    Text(config.hint, fontSize = 11.sp, fontFamily = RajdhaniFont, color = TextDim)
                 }
                 TextButton(onClick = onGetKeyClick) {
                     Icon(Icons.Default.OpenInNew, "Get Key", tint = NeonCyan, modifier = Modifier.size(16.dp))
@@ -411,6 +416,7 @@ fun ThemeCard(
             Text(
                 theme.name,
                 fontSize = 14.sp,
+                fontFamily = RajdhaniFont,
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                 color = if (isSelected) theme.primaryColor else TextWhite
             )
@@ -444,8 +450,8 @@ fun SettingsToggleCard(
             Icon(icon, title, tint = NeonCyan, modifier = Modifier.size(24.dp))
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(title, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = TextWhite)
-                Text(description, fontSize = 11.sp, color = TextDim)
+                Text(title, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, fontFamily = RajdhaniFont, color = TextWhite)
+                Text(description, fontSize = 11.sp, fontFamily = RajdhaniFont, color = TextDim)
             }
             Switch(
                 checked = checked,

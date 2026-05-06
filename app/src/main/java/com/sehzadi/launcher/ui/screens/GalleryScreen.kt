@@ -64,6 +64,7 @@ fun GalleryScreen(
                     "GALLERY",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
+                    fontFamily = OrbitronFont,
                     color = NeonCyan,
                     letterSpacing = 4.sp
                 )
@@ -71,6 +72,7 @@ fun GalleryScreen(
                 Text(
                     "${images.size} images",
                     fontSize = 12.sp,
+                    fontFamily = JetBrainsMonoFont,
                     color = TextDim
                 )
             }
@@ -85,8 +87,8 @@ fun GalleryScreen(
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Icon(Icons.Default.PhotoLibrary, "Empty", tint = TextDim, modifier = Modifier.size(64.dp))
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text("No images yet", fontSize = 16.sp, color = TextDim)
-                        Text("Take a photo or generate an image", fontSize = 12.sp, color = TextDim.copy(alpha = 0.5f))
+                        Text("No images yet", fontSize = 16.sp, fontFamily = RajdhaniFont, color = TextDim)
+                        Text("Take a photo or generate an image", fontSize = 12.sp, fontFamily = RajdhaniFont, color = TextDim.copy(alpha = 0.5f))
                     }
                 }
             } else {

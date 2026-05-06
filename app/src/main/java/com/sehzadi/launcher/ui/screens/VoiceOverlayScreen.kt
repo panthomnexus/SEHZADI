@@ -20,6 +20,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.sehzadi.launcher.R
 import com.sehzadi.launcher.ui.theme.*
 import com.sehzadi.launcher.voice.VoiceState
 
@@ -78,11 +84,32 @@ fun VoiceOverlayScreen(
                     VoiceState.SPEAKING -> "Speaking..."
                 },
                 fontSize = 16.sp,
+                fontFamily = OrbitronFont,
                 color = NeonCyan,
                 letterSpacing = 2.sp
             )
 
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Voice wave Lottie animation
+            if (isListening) {
+                val voiceWaveComposition by rememberLottieComposition(
+                    LottieCompositionSpec.RawRes(R.raw.voice_wave_animation)
+                )
+                val voiceWaveProgress by animateLottieCompositionAsState(
+                    composition = voiceWaveComposition,
+                    iterations = LottieConstants.IterateForever
+                )
+                LottieAnimation(
+                    composition = voiceWaveComposition,
+                    progress = { voiceWaveProgress },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Mic button with pulse
             Box(contentAlignment = Alignment.Center) {
@@ -147,6 +174,7 @@ fun VoiceOverlayScreen(
                     Text(
                         text = recognizedText,
                         fontSize = 16.sp,
+                        fontFamily = RajdhaniFont,
                         color = TextWhite,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(16.dp)
@@ -160,11 +188,13 @@ fun VoiceOverlayScreen(
             Text(
                 text = "Say 'Hacknuma' to activate anytime",
                 fontSize = 12.sp,
+                fontFamily = RajdhaniFont,
                 color = TextDim.copy(alpha = 0.5f)
             )
             Text(
                 text = "Double tap screen for voice mode",
                 fontSize = 12.sp,
+                fontFamily = RajdhaniFont,
                 color = TextDim.copy(alpha = 0.5f)
             )
         }
