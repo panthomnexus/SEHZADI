@@ -17,7 +17,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -102,6 +101,7 @@ fun FloatingWidgetOverlay(
                                 },
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold,
+                                fontFamily = OrbitronFont,
                                 color = NeonCyan.copy(alpha = glowAlpha),
                                 letterSpacing = 2.sp
                             )
@@ -142,8 +142,8 @@ fun LiveClockContent() {
     }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-        Text(time, fontSize = 28.sp, fontWeight = FontWeight.Bold, color = NeonCyan, fontFamily = FontFamily.Monospace)
-        Text(date, fontSize = 12.sp, color = TextDim)
+        Text(time, fontSize = 28.sp, fontWeight = FontWeight.Bold, color = NeonCyan, fontFamily = JetBrainsMonoFont)
+        Text(date, fontSize = 12.sp, fontFamily = RajdhaniFont, color = TextDim)
     }
 }
 
@@ -160,7 +160,7 @@ fun SystemStatsContent(stats: SystemStats) {
 @Composable
 fun WidgetStatRow(label: String, value: String, progress: Float) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(label, fontSize = 9.sp, color = TextDim, modifier = Modifier.width(28.dp))
+        Text(label, fontSize = 9.sp, fontFamily = OrbitronFont, color = TextDim, modifier = Modifier.width(28.dp))
         LinearProgressIndicator(
             progress = progress.coerceIn(0f, 1f),
             modifier = Modifier
@@ -173,19 +173,19 @@ fun WidgetStatRow(label: String, value: String, progress: Float) {
             },
             trackColor = DarkBackground
         )
-        Text(value, fontSize = 9.sp, color = NeonCyan, modifier = Modifier.width(32.dp))
+        Text(value, fontSize = 9.sp, fontFamily = JetBrainsMonoFont, color = NeonCyan, modifier = Modifier.width(32.dp))
     }
 }
 
 @Composable
 fun NotesContent(notes: Map<String, Pair<String, String>>) {
     if (notes.isEmpty()) {
-        Text("No notes", fontSize = 12.sp, color = TextDim)
+        Text("No notes", fontSize = 12.sp, fontFamily = RajdhaniFont, color = TextDim)
     } else {
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             notes.entries.take(3).forEach { (_, pair) ->
-                Text(pair.first, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = TextWhite, maxLines = 1)
-                Text(pair.second.take(40), fontSize = 9.sp, color = TextDim, maxLines = 1)
+                Text(pair.first, fontSize = 11.sp, fontFamily = RajdhaniFont, fontWeight = FontWeight.Bold, color = TextWhite, maxLines = 1)
+                Text(pair.second.take(40), fontSize = 9.sp, fontFamily = RajdhaniFont, color = TextDim, maxLines = 1)
             }
         }
     }

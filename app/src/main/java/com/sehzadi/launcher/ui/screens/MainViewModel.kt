@@ -17,6 +17,7 @@ import com.sehzadi.launcher.health.WellnessManager
 import com.sehzadi.launcher.permissions.PermissionManager
 import com.sehzadi.launcher.services.GalleryImage
 import com.sehzadi.launcher.services.GalleryService
+import com.sehzadi.launcher.services.SoundManager
 import com.sehzadi.launcher.services.TtsService
 import com.sehzadi.launcher.services.UsageMonitorService
 import com.sehzadi.launcher.services.WidgetService
@@ -68,7 +69,8 @@ class MainViewModel @Inject constructor(
     private val settingsStore: SettingsStore,
     val modelManager: ModelManager,
     private val hybridAIEngine: HybridAIEngine,
-    val proactiveAIService: ProactiveAIService
+    val proactiveAIService: ProactiveAIService,
+    val soundManager: SoundManager
 ) : ViewModel() {
 
     val installedApps: StateFlow<List<AppInfo>> = appManager.installedApps
@@ -112,6 +114,8 @@ class MainViewModel @Inject constructor(
             themeEngine.initialize()
             voiceEngine.initialize()
             wellnessManager.startSession()
+            soundManager.initialize()
+            soundManager.playPowerUp()
 
             actionExecutor.onResultCallback = { text, imageUrl ->
                 viewModelScope.launch {
@@ -133,6 +137,7 @@ class MainViewModel @Inject constructor(
 
     fun sendMessage(text: String) {
         viewModelScope.launch {
+            soundManager.playTap()
             _chatMessages.value = _chatMessages.value + ChatMessage(text, isUser = true)
             _isAIProcessing.value = true
 
@@ -141,6 +146,7 @@ class MainViewModel @Inject constructor(
 
                 if (parsedIntent.intent == "chat") {
                     val response = aiEngine.processCommand(text)
+                    soundManager.playAIResponse()
                     _chatMessages.value = _chatMessages.value + ChatMessage(
                         text = response.text,
                         isUser = false,
@@ -151,9 +157,11 @@ class MainViewModel @Inject constructor(
                     }
                 } else {
                     val action = intentRouter.route(parsedIntent)
+                    soundManager.playScan()
                     actionExecutor.execute(action)
                 }
             } catch (e: Exception) {
+                soundManager.playError()
                 _chatMessages.value = _chatMessages.value + ChatMessage(
                     text = "Error: ${e.message}",
                     isUser = false
@@ -201,6 +209,7 @@ class MainViewModel @Inject constructor(
     fun getNotes() = storageManager.getNotes()
 
     fun startVoiceListening() {
+        soundManager.playWakeWord()
         voiceEngine.startListeningForCommand()
     }
 
@@ -284,5 +293,6 @@ class MainViewModel @Inject constructor(
         super.onCleared()
         voiceEngine.destroy()
         ttsService.destroy()
+        soundManager.destroy()
     }
 }

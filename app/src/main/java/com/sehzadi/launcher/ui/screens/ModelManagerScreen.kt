@@ -73,12 +73,14 @@ fun ModelManagerScreen(
                         "AI MODEL MANAGER",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
+                        fontFamily = OrbitronFont,
                         color = NeonCyan,
                         letterSpacing = 3.sp
                     )
                     Text(
                         activeModel?.let { "Active: ${it.model.name}" } ?: "No model loaded",
                         fontSize = 12.sp,
+                        fontFamily = RajdhaniFont,
                         color = if (activeModel != null) NeonGreen else TextDim
                     )
                 }
@@ -128,7 +130,7 @@ fun DeviceInfoCard(capability: DeviceCapability) {
         colors = CardDefaults.cardColors(containerColor = DarkCard.copy(alpha = 0.8f))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("DEVICE STATUS", fontSize = 12.sp, color = NeonCyan, letterSpacing = 2.sp, fontWeight = FontWeight.Bold)
+            Text("DEVICE STATUS", fontSize = 12.sp, fontFamily = OrbitronFont, color = NeonCyan, letterSpacing = 2.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(12.dp))
 
             Row(
@@ -150,7 +152,7 @@ fun DeviceInfoCard(capability: DeviceCapability) {
                     ) {
                         Icon(Icons.Default.Warning, null, tint = Color(0xFFFFAA00), modifier = Modifier.size(14.dp))
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text(warning, fontSize = 11.sp, color = Color(0xFFFFAA00))
+                        Text(warning, fontSize = 11.sp, fontFamily = RajdhaniFont, color = Color(0xFFFFAA00))
                     }
                 }
             }
@@ -161,12 +163,12 @@ fun DeviceInfoCard(capability: DeviceCapability) {
 @Composable
 fun DeviceStat(label: String, value: String, subtitle: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(label, fontSize = 10.sp, color = TextDim)
+        Text(label, fontSize = 10.sp, fontFamily = OrbitronFont, color = TextDim)
         if (value.isNotEmpty()) {
-            Text(value, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = TextWhite)
+            Text(value, fontSize = 14.sp, fontFamily = JetBrainsMonoFont, fontWeight = FontWeight.Bold, color = TextWhite)
         }
         if (subtitle.isNotEmpty()) {
-            Text(subtitle, fontSize = 10.sp, color = NeonGreen)
+            Text(subtitle, fontSize = 10.sp, fontFamily = JetBrainsMonoFont, color = NeonGreen)
         }
     }
 }
@@ -233,9 +235,9 @@ fun ModelCard(
                 }
                 Spacer(modifier = Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(model.name, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = TextWhite)
+                    Text(model.name, fontSize = 16.sp, fontFamily = RajdhaniFont, fontWeight = FontWeight.Bold, color = TextWhite)
                     Text("${model.tier.label} • ${formatSize(model.sizeMb)} • v${model.version}",
-                        fontSize = 12.sp, color = TextDim)
+                        fontSize = 12.sp, fontFamily = JetBrainsMonoFont, color = TextDim)
                 }
                 if (isActive) {
                     Box(
@@ -244,13 +246,13 @@ fun ModelCard(
                             .background(tierColor.copy(alpha = 0.2f))
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
-                        Text("ACTIVE", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = tierColor)
+                        Text("ACTIVE", fontSize = 10.sp, fontFamily = OrbitronFont, fontWeight = FontWeight.Bold, color = tierColor)
                     }
                 }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
-            Text(model.description, fontSize = 12.sp, color = TextDim, lineHeight = 16.sp)
+            Text(model.description, fontSize = 12.sp, fontFamily = RajdhaniFont, color = TextDim, lineHeight = 16.sp)
 
             // Capabilities
             Spacer(modifier = Modifier.height(8.dp))
@@ -262,7 +264,7 @@ fun ModelCard(
                             .background(tierColor.copy(alpha = 0.1f))
                             .padding(horizontal = 6.dp, vertical = 2.dp)
                     ) {
-                        Text(cap, fontSize = 9.sp, color = tierColor)
+                        Text(cap, fontSize = 9.sp, fontFamily = RajdhaniFont, color = tierColor)
                     }
                 }
                 if (model.capabilities.size > 4) {

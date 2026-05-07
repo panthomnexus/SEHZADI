@@ -1,0 +1,17 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="32"
+    android:viewportHeight="32">
+    <!-- Signal waves -->
+    <path android:fillColor="#00000000" android:strokeColor="#FF00FF88" android:strokeWidth="1.5"
+        android:pathData="M16,28C16,28 8,20 8,14C8,9.6 11.6,6 16,6C20.4,6 24,9.6 24,14C24,20 16,28 16,28Z"/>
+    <path android:fillColor="#00000000" android:strokeColor="#FF00FF88" android:strokeWidth="1"
+        android:pathData="M16,22C16,22 12,18 12,14C12,11.8 13.8,10 16,10C18.2,10 20,11.8 20,14C20,18 16,22 16,22Z"/>
+    <path android:fillColor="#FF00FF88" android:pathData="M16,14m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0"/>
+    <!-- Speed arrows -->
+    <path android:fillColor="#00000000" android:strokeColor="#FF00F0FF" android:strokeWidth="1"
+        android:pathData="M4,16L4,10M2,12L4,10L6,12"/>
+    <path android:fillColor="#00000000" android:strokeColor="#FF00F0FF" android:strokeWidth="1"
+        android:pathData="M28,16L28,22M26,20L28,22L30,20"/>
+</vector>

@@ -88,7 +88,7 @@ fun AppDrawerScreen(
                 value = searchQuery,
                 onValueChange = { viewModel.searchApps(it) },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Search apps...", color = TextDim) },
+                placeholder = { Text("Search apps...", color = TextDim, fontFamily = RajdhaniFont) },
                 leadingIcon = { Icon(Icons.Default.Search, "Search", tint = NeonCyan) },
                 trailingIcon = {
                     if (searchQuery.isNotBlank()) {
@@ -118,7 +118,7 @@ fun AppDrawerScreen(
                     FilterChip(
                         selected = selectedCategory == category,
                         onClick = { selectedCategory = category },
-                        label = { Text(category, fontSize = 12.sp) },
+                        label = { Text(category, fontSize = 12.sp, fontFamily = RajdhaniFont) },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = NeonCyan.copy(alpha = 0.2f),
                             selectedLabelColor = NeonCyan,
@@ -139,6 +139,7 @@ fun AppDrawerScreen(
             Text(
                 text = "${displayApps.size} Apps",
                 fontSize = 12.sp,
+                fontFamily = JetBrainsMonoFont,
                 color = TextDim,
                 modifier = Modifier.padding(start = 4.dp)
             )
@@ -224,6 +225,7 @@ fun AppDrawerIcon(
         Text(
             text = app.appName,
             fontSize = 10.sp,
+            fontFamily = RajdhaniFont,
             color = TextWhite.copy(alpha = 0.8f),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,

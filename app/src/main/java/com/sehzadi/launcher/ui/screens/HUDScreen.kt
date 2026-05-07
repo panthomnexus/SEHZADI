@@ -25,6 +25,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.sehzadi.launcher.R
 import com.sehzadi.launcher.customization.HudTheme
 import com.sehzadi.launcher.system.SystemStats
 import com.sehzadi.launcher.ui.theme.*
@@ -89,11 +95,30 @@ fun HUDScreen(
     ) {
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Time display
+        // Lottie data stream animation at top
+        val dataStreamComposition by rememberLottieComposition(
+            LottieCompositionSpec.RawRes(R.raw.data_stream)
+        )
+        val dataStreamProgress by animateLottieCompositionAsState(
+            composition = dataStreamComposition,
+            iterations = LottieConstants.IterateForever
+        )
+        LottieAnimation(
+            composition = dataStreamComposition,
+            progress = { dataStreamProgress },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(24.dp)
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Time display - Orbitron font
         Text(
             text = currentTime.value,
             fontSize = 48.sp,
-            fontWeight = FontWeight.Thin,
+            fontWeight = FontWeight.Normal,
+            fontFamily = OrbitronFont,
             color = theme.primaryColor,
             letterSpacing = 8.sp
         )
@@ -101,21 +126,52 @@ fun HUDScreen(
         Text(
             text = currentDate.value,
             fontSize = 14.sp,
+            fontFamily = RajdhaniFont,
+            fontWeight = FontWeight.Medium,
             color = theme.textColor.copy(alpha = 0.7f),
             letterSpacing = 2.sp
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Central HUD Circle
+        // Central HUD Circle with Lottie overlay
         Box(
             modifier = Modifier.size(280.dp),
             contentAlignment = Alignment.Center
         ) {
-            // Animated rings
+            // Animated rings (canvas)
             Canvas(modifier = Modifier.fillMaxSize()) {
                 drawHUDRings(rotation, pulseAlpha, theme)
             }
+
+            // Lottie neon glow ring overlay
+            val neonRingComposition by rememberLottieComposition(
+                LottieCompositionSpec.RawRes(R.raw.neon_glow_ring)
+            )
+            val neonRingProgress by animateLottieCompositionAsState(
+                composition = neonRingComposition,
+                iterations = LottieConstants.IterateForever
+            )
+            LottieAnimation(
+                composition = neonRingComposition,
+                progress = { neonRingProgress },
+                modifier = Modifier.fillMaxSize()
+            )
+
+            // Lottie HUD ring animation
+            val hudRingComposition by rememberLottieComposition(
+                LottieCompositionSpec.RawRes(R.raw.hud_ring_animation)
+            )
+            val hudRingProgress by animateLottieCompositionAsState(
+                composition = hudRingComposition,
+                iterations = LottieConstants.IterateForever
+            )
+            LottieAnimation(
+                composition = hudRingComposition,
+                progress = { hudRingProgress },
+                modifier = Modifier
+                    .size(200.dp)
+            )
 
             // Center stats
             Column(
@@ -125,6 +181,7 @@ fun HUDScreen(
                     text = "SEHZADI",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
+                    fontFamily = OrbitronFont,
                     color = theme.primaryColor,
                     letterSpacing = 4.sp
                 )
@@ -132,12 +189,14 @@ fun HUDScreen(
                 Text(
                     text = "${systemStats.batteryLevel}%",
                     fontSize = 36.sp,
-                    fontWeight = FontWeight.Light,
+                    fontWeight = FontWeight.Normal,
+                    fontFamily = JetBrainsMonoFont,
                     color = if (systemStats.batteryLevel > 20) theme.primaryColor else Color(0xFFFF4444)
                 )
                 Text(
                     text = if (systemStats.isCharging) "CHARGING" else "BATTERY",
                     fontSize = 10.sp,
+                    fontFamily = OrbitronFont,
                     color = theme.textColor.copy(alpha = 0.5f),
                     letterSpacing = 3.sp
                 )
@@ -215,13 +274,13 @@ fun HUDScreen(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Icon(Icons.Default.ArrowDownward, "Download", tint = theme.accentColor, modifier = Modifier.size(20.dp))
-                    Text("%.1f KB/s".format(systemStats.downloadSpeedKbps), color = theme.textColor, fontSize = 14.sp)
-                    Text("Download", color = theme.textColor.copy(alpha = 0.5f), fontSize = 10.sp)
+                    Text("%.1f KB/s".format(systemStats.downloadSpeedKbps), color = theme.textColor, fontSize = 14.sp, fontFamily = JetBrainsMonoFont)
+                    Text("Download", color = theme.textColor.copy(alpha = 0.5f), fontSize = 10.sp, fontFamily = OrbitronFont)
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Icon(Icons.Default.ArrowUpward, "Upload", tint = theme.secondaryColor, modifier = Modifier.size(20.dp))
-                    Text("%.1f KB/s".format(systemStats.uploadSpeedKbps), color = theme.textColor, fontSize = 14.sp)
-                    Text("Upload", color = theme.textColor.copy(alpha = 0.5f), fontSize = 10.sp)
+                    Text("%.1f KB/s".format(systemStats.uploadSpeedKbps), color = theme.textColor, fontSize = 14.sp, fontFamily = JetBrainsMonoFont)
+                    Text("Upload", color = theme.textColor.copy(alpha = 0.5f), fontSize = 10.sp, fontFamily = OrbitronFont)
                 }
             }
         }
@@ -261,6 +320,7 @@ fun HUDStatCard(
             Text(
                 text = label,
                 fontSize = 10.sp,
+                fontFamily = OrbitronFont,
                 color = theme.textColor.copy(alpha = 0.5f),
                 letterSpacing = 2.sp
             )
@@ -269,11 +329,13 @@ fun HUDStatCard(
                 text = value,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
+                fontFamily = JetBrainsMonoFont,
                 color = theme.textColor
             )
             Text(
                 text = subValue,
                 fontSize = 10.sp,
+                fontFamily = RajdhaniFont,
                 color = theme.textColor.copy(alpha = 0.5f)
             )
             Spacer(modifier = Modifier.height(8.dp))

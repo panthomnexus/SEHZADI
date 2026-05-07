@@ -62,17 +62,20 @@ fun HomeScreen(
     ) {
         Spacer(modifier = Modifier.height(60.dp))
 
-        // Clock
+        // Clock with futuristic font
         Text(
             text = currentTime.value,
             fontSize = 72.sp,
-            fontWeight = FontWeight.Thin,
+            fontWeight = FontWeight.Normal,
+            fontFamily = OrbitronFont,
             color = NeonCyan,
             letterSpacing = 4.sp
         )
         Text(
             text = currentDate.value,
             fontSize = 16.sp,
+            fontFamily = RajdhaniFont,
+            fontWeight = FontWeight.Medium,
             color = TextDim,
             letterSpacing = 2.sp
         )
@@ -113,6 +116,7 @@ fun HomeScreen(
         Text(
             text = "QUICK ACTIONS",
             fontSize = 11.sp,
+            fontFamily = OrbitronFont,
             color = TextDim,
             letterSpacing = 3.sp,
             modifier = Modifier.align(Alignment.Start)
@@ -163,6 +167,7 @@ fun HomeScreen(
             Text(
                 text = "APPS",
                 fontSize = 11.sp,
+                fontFamily = OrbitronFont,
                 color = TextDim,
                 letterSpacing = 3.sp,
                 modifier = Modifier.align(Alignment.Start)
@@ -200,6 +205,7 @@ fun HomeScreen(
             Text(
                 text = "Swipe up for all apps",
                 fontSize = 10.sp,
+                fontFamily = RajdhaniFont,
                 color = TextDim.copy(alpha = 0.5f)
             )
         }
@@ -226,6 +232,7 @@ fun QuickStat(
             text = value,
             fontSize = 12.sp,
             color = color,
+            fontFamily = JetBrainsMonoFont,
             fontWeight = FontWeight.Medium
         )
     }
@@ -255,7 +262,7 @@ fun QuickActionButton(
             Icon(icon, contentDescription = label, tint = color, modifier = Modifier.size(22.dp))
         }
         Spacer(modifier = Modifier.height(4.dp))
-        Text(label, fontSize = 10.sp, color = TextDim)
+        Text(label, fontSize = 10.sp, color = TextDim, fontFamily = RajdhaniFont)
     }
 }
 
@@ -289,6 +296,7 @@ fun AppIcon(
         Text(
             text = app.appName,
             fontSize = 10.sp,
+            fontFamily = RajdhaniFont,
             color = TextWhite.copy(alpha = 0.8f),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,

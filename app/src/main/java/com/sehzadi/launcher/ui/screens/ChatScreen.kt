@@ -24,6 +24,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.sehzadi.launcher.R
 import com.sehzadi.launcher.ui.theme.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -71,10 +77,11 @@ fun ChatScreen(
             }
             Spacer(modifier = Modifier.width(12.dp))
             Column {
-                Text("SEHZADI AI", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = NeonCyan, letterSpacing = 2.sp)
+                Text("SEHZADI AI", fontSize = 16.sp, fontWeight = FontWeight.Bold, fontFamily = OrbitronFont, color = NeonCyan, letterSpacing = 2.sp)
                 Text(
                     if (isProcessing) "Thinking..." else "Online",
                     fontSize = 11.sp,
+                    fontFamily = RajdhaniFont,
                     color = if (isProcessing) NeonPink else NeonGreen
                 )
             }
@@ -197,6 +204,8 @@ fun ChatBubble(message: ChatMessage) {
                 Text(
                     text = message.text,
                     fontSize = 14.sp,
+                    fontFamily = RajdhaniFont,
+                    fontWeight = FontWeight.Medium,
                     color = TextWhite,
                     lineHeight = 20.sp
                 )
@@ -232,11 +241,26 @@ fun WelcomeMessage() {
             .padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("SEHZADI", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = NeonCyan, letterSpacing = 6.sp)
+        // Lottie AI pulse animation
+        val aiPulseComposition by rememberLottieComposition(
+            LottieCompositionSpec.RawRes(R.raw.ai_pulse_animation)
+        )
+        val aiPulseProgress by animateLottieCompositionAsState(
+            composition = aiPulseComposition,
+            iterations = LottieConstants.IterateForever
+        )
+        LottieAnimation(
+            composition = aiPulseComposition,
+            progress = { aiPulseProgress },
+            modifier = Modifier.size(80.dp)
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+        Text("SEHZADI", fontSize = 28.sp, fontWeight = FontWeight.Bold, fontFamily = OrbitronFont, color = NeonCyan, letterSpacing = 6.sp)
         Spacer(modifier = Modifier.height(8.dp))
-        Text("AI ASSISTANT", fontSize = 12.sp, color = TextDim, letterSpacing = 4.sp)
+        Text("AI ASSISTANT", fontSize = 12.sp, fontFamily = OrbitronFont, color = TextDim, letterSpacing = 4.sp)
         Spacer(modifier = Modifier.height(24.dp))
-        Text("Try:", fontSize = 12.sp, color = TextDim)
+        Text("Try:", fontSize = 12.sp, fontFamily = RajdhaniFont, color = TextDim)
         Spacer(modifier = Modifier.height(8.dp))
 
         listOf(
@@ -244,11 +268,14 @@ fun WelcomeMessage() {
             "\"Image bana do sunset ka\"",
             "\"Aaj ka weather kya hai?\"",
             "\"Code likh do Python mein\"",
-            "\"Mera note save karo\""
+            "\"Mera note save karo\"",
+            "\"Tesla ka stock analysis kar\"",
+            "\"Live clock bana do\""
         ).forEach { suggestion ->
             Text(
                 text = suggestion,
                 fontSize = 13.sp,
+                fontFamily = RajdhaniFont,
                 color = NeonCyan.copy(alpha = 0.6f),
                 modifier = Modifier.padding(vertical = 2.dp)
             )
@@ -258,25 +285,30 @@ fun WelcomeMessage() {
 
 @Composable
 fun TypingIndicator() {
-    val infiniteTransition = rememberInfiniteTransition(label = "typing")
-    val dot1 by infiniteTransition.animateFloat(0f, 1f,
-        infiniteRepeatable(tween(600, 0), RepeatMode.Reverse), label = "d1")
-    val dot2 by infiniteTransition.animateFloat(0f, 1f,
-        infiniteRepeatable(tween(600, 200), RepeatMode.Reverse), label = "d2")
-    val dot3 by infiniteTransition.animateFloat(0f, 1f,
-        infiniteRepeatable(tween(600, 400), RepeatMode.Reverse), label = "d3")
-
     Row(
         modifier = Modifier.padding(start = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        listOf(dot1, dot2, dot3).forEach { alpha ->
-            Box(
-                modifier = Modifier
-                    .size(8.dp)
-                    .clip(CircleShape)
-                    .background(NeonCyan.copy(alpha = alpha))
-            )
-        }
+        // Lottie loading spinner
+        val loadingComposition by rememberLottieComposition(
+            LottieCompositionSpec.RawRes(R.raw.loading_spinner)
+        )
+        val loadingProgress by animateLottieCompositionAsState(
+            composition = loadingComposition,
+            iterations = LottieConstants.IterateForever
+        )
+        LottieAnimation(
+            composition = loadingComposition,
+            progress = { loadingProgress },
+            modifier = Modifier.size(28.dp)
+        )
+
+        Text(
+            text = "Processing...",
+            fontSize = 12.sp,
+            fontFamily = RajdhaniFont,
+            color = NeonCyan.copy(alpha = 0.7f)
+        )
     }
 }

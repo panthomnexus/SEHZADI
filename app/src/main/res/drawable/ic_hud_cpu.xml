@@ -1,0 +1,12 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="32"
+    android:viewportHeight="32">
+    <path android:fillColor="#00000000" android:strokeColor="#FF00F0FF" android:strokeWidth="1.5"
+        android:pathData="M8,8L24,8L24,24L8,24Z"/>
+    <path android:fillColor="#FF0066FF" android:pathData="M12,12L20,12L20,20L12,20Z"/>
+    <!-- Pins -->
+    <path android:fillColor="#00000000" android:strokeColor="#FF00F0FF" android:strokeWidth="1"
+        android:pathData="M12,8L12,4M16,8L16,4M20,8L20,4M12,24L12,28M16,24L16,28M20,24L20,28M8,12L4,12M8,16L4,16M8,20L4,20M24,12L28,12M24,16L28,16M24,20L28,20"/>
+</vector>

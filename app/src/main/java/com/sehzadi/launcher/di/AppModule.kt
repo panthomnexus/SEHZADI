@@ -27,6 +27,7 @@ import com.sehzadi.launcher.ai.models.DeviceCapabilityDetector
 import com.sehzadi.launcher.ai.models.HybridAIEngine
 import com.sehzadi.launcher.ai.models.ModelManager
 import com.sehzadi.launcher.ai.models.ProactiveAIService
+import com.sehzadi.launcher.services.SoundManager
 import com.sehzadi.launcher.storage.StorageManager
 import com.sehzadi.launcher.system.SystemMonitor
 import com.sehzadi.launcher.voice.VoiceEngine
@@ -237,6 +238,12 @@ object AppModule {
     @Singleton
     fun provideSettingsStore(@ApplicationContext context: Context): SettingsStore {
         return SettingsStore(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSoundManager(@ApplicationContext context: Context): SoundManager {
+        return SoundManager(context)
     }
 
     @Provides
