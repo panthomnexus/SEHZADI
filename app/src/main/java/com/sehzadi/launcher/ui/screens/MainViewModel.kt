@@ -110,12 +110,26 @@ class MainViewModel @Inject constructor(
 
     fun initialize() {
         viewModelScope.launch {
-            appManager.loadInstalledApps()
-            themeEngine.initialize()
-            voiceEngine.initialize()
-            wellnessManager.startSession()
-            soundManager.initialize()
-            soundManager.playPowerUp()
+            try {
+                appManager.loadInstalledApps()
+            } catch (_: Exception) { }
+
+            try {
+                themeEngine.initialize()
+            } catch (_: Exception) { }
+
+            try {
+                voiceEngine.initialize()
+            } catch (_: Exception) { }
+
+            try {
+                wellnessManager.startSession()
+            } catch (_: Exception) { }
+
+            try {
+                soundManager.initialize()
+                soundManager.playPowerUp()
+            } catch (_: Exception) { }
 
             actionExecutor.onResultCallback = { text, imageUrl ->
                 viewModelScope.launch {
@@ -133,8 +147,10 @@ class MainViewModel @Inject constructor(
                 }
             }
 
-            // Auto-start wake word listening
-            voiceEngine.startWakeWordListening()
+            // Auto-start wake word listening (only if mic permission granted)
+            try {
+                voiceEngine.startWakeWordListening()
+            } catch (_: Exception) { }
         }
     }
 
