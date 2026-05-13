@@ -407,19 +407,19 @@ class AIEngine @Inject constructor(
         val lower = input.lowercase()
         return when {
             lower.contains("weather") || lower.contains("mausam") ->
-                "Weather ka data le rahi hoon... Thoda wait karo."
+                "Weather ke liye API key chahiye. Settings mein Gemini ya Groq key configure karo."
             lower.contains("open") ->
-                "App open kar rahi hoon..."
+                "App kholne ke liye chat mein command do — 'open WhatsApp' jaise. AI response ke liye API key Settings mein set karo."
             lower.contains("call") ->
-                "Call laga rahi hoon..."
+                "Call ke liye 'call [naam]' bolo. Contact permissions bhi grant karo Settings mein."
             lower.contains("message") || lower.contains("sms") || lower.contains("whatsapp") ->
-                "Message bhej rahi hoon..."
+                "Message ke liye 'message [naam] ko [text]' bolo. SMS permission bhi chahiye."
             lower.contains("photo") || lower.contains("camera") ->
-                "Camera open kar rahi hoon..."
+                "Photo ke liye 'photo le lo' bolo. Camera permission grant karo Settings mein."
             lower.contains("clock") ->
-                "Live clock laga rahi hoon HUD pe."
+                "Live clock ke liye 'live clock' command do."
             lower.contains("stock") ->
-                "Stock analysis kar rahi hoon..."
+                "Stock analysis ke liye API key configure karo Settings mein — Gemini ya Groq."
             lower.contains("help") || lower.contains("kaise") ->
                 "Main SEHZADI hoon — aapki AI assistant. Koi bhi command bolo — app kholna, call karna, photo lena, ya mujhse baat karna."
             lower.contains("hello") || lower.contains("hi") || lower.contains("namaste") ->
