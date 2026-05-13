@@ -103,7 +103,6 @@ class VoiceEngine @Inject constructor(
             _voiceState.value = VoiceState.IDLE
             return
         }
-        consecutiveErrors = 0
         _voiceState.value = VoiceState.LISTENING_WAKE_WORD
         startListeningInternal(isWakeWord = true)
     }
@@ -111,7 +110,6 @@ class VoiceEngine @Inject constructor(
     fun startListeningForCommand() {
         if (_isSpeaking.value) return
         if (!hasMicPermission()) return
-        consecutiveErrors = 0
         _voiceState.value = VoiceState.LISTENING_COMMAND
         startListeningInternal(isWakeWord = false)
     }
@@ -137,6 +135,7 @@ class VoiceEngine @Inject constructor(
         speechRecognizer?.setRecognitionListener(object : RecognitionListener {
             override fun onReadyForSpeech(params: Bundle?) {
                 _isListening.value = true
+                consecutiveErrors = 0
             }
 
             override fun onResults(results: Bundle?) {

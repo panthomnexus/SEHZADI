@@ -169,7 +169,8 @@ class MainViewModel @Inject constructor(
                     soundManager.playAIResponse()
                     _chatMessages.value = _chatMessages.value + ChatMessage(
                         text = routeResult.response,
-                        isUser = false
+                        isUser = false,
+                        imageUrl = routeResult.imageUrl
                     )
                     if (voiceEngine.voiceState.value != com.sehzadi.launcher.voice.VoiceState.IDLE) {
                         voiceEngine.speak(routeResult.response)
