@@ -1,13 +1,16 @@
 package com.sehzadi.launcher.voice
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import androidx.core.content.ContextCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -47,8 +50,17 @@ class VoiceEngine @Inject constructor(
     private var onCommandReceived: ((String) -> Unit)? = null
     private var isSessionActive = false
 
+    private var consecutiveErrors = 0
+    private val MAX_CONSECUTIVE_ERRORS = 3
+
     companion object {
-        const val WAKE_WORD = "hacknuma"
+        val WAKE_WORDS = listOf("sehzadi", "hacknuma")
+    }
+
+    private fun hasMicPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context, Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     fun initialize() {
@@ -87,12 +99,19 @@ class VoiceEngine @Inject constructor(
     }
 
     fun startWakeWordListening() {
+        if (!hasMicPermission()) {
+            _voiceState.value = VoiceState.IDLE
+            return
+        }
+        consecutiveErrors = 0
         _voiceState.value = VoiceState.LISTENING_WAKE_WORD
         startListeningInternal(isWakeWord = true)
     }
 
     fun startListeningForCommand() {
         if (_isSpeaking.value) return
+        if (!hasMicPermission()) return
+        consecutiveErrors = 0
         _voiceState.value = VoiceState.LISTENING_COMMAND
         startListeningInternal(isWakeWord = false)
     }
@@ -100,7 +119,7 @@ class VoiceEngine @Inject constructor(
     fun activateSession() {
         isSessionActive = true
         _voiceState.value = VoiceState.ACTIVATED
-        speak("Haan, bolo. Main sun raha hoon.")
+        speak("Haan, bolo. Main SEHZADI hoon, sun rahi hoon.")
     }
 
     fun deactivateSession() {
@@ -122,12 +141,14 @@ class VoiceEngine @Inject constructor(
 
             override fun onResults(results: Bundle?) {
                 _isListening.value = false
+                consecutiveErrors = 0
                 val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 val text = matches?.firstOrNull() ?: ""
                 _recognizedText.value = text
 
                 if (isWakeWord) {
-                    if (text.lowercase().contains(WAKE_WORD)) {
+                    val lower = text.lowercase()
+                    if (WAKE_WORDS.any { lower.contains(it) }) {
                         activateSession()
                     } else {
                         startWakeWordListening()
@@ -149,6 +170,11 @@ class VoiceEngine @Inject constructor(
 
             override fun onError(error: Int) {
                 _isListening.value = false
+                consecutiveErrors++
+                if (consecutiveErrors >= MAX_CONSECUTIVE_ERRORS) {
+                    _voiceState.value = VoiceState.IDLE
+                    return
+                }
                 if (isSessionActive && !_isSpeaking.value) {
                     startListeningForCommand()
                 } else if (isWakeWord) {

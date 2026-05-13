@@ -37,17 +37,23 @@ class RuleEngine {
                 "AI se pucha: 'Tumhe neend aati hai?' AI bola: 'Nahi, lekin mera server zaroor so jaata hai.'"
             ).random()
         },
-        Rule("help", listOf("help", "madad", "kya kar sakta", "features")) {
-            "Main ye sab kar sakta hoon:\n" +
+        Rule("help", listOf("help", "madad", "kya kar sakta", "kya kar sakti", "features")) {
+            "Main ye sab kar sakti hoon:\n" +
             "• App kholna: 'open WhatsApp'\n" +
             "• Call karna: 'call Rahul'\n" +
             "• Message bhejhna: 'message Amit ko'\n" +
             "• Photo lena: 'photo le lo'\n" +
             "• Clock widget: 'live clock'\n" +
-            "• AI chat: kuch bhi pucho\n" +
+            "• AI chat: kuch bhi poocho\n" +
             "• Stock analysis: 'Tesla ka analysis'\n" +
             "• Web search: 'search karo'\n" +
             "Aur bahut kuch! Bas bolo."
+        },
+        Rule("chat", listOf("baat", "baat kar", "ai se baat", "talk")) {
+            "Haan bolo! Main sun rahi hoon. Kuch bhi poocho — main jawab dungi."
+        },
+        Rule("ready", listOf("sab set", "ready", "all set", "done")) {
+            "Sahi hai! Ab bolo kya karna hai — main ready hoon har kaam ke liye."
         },
         Rule("good_morning", listOf("good morning", "subah", "suprabhat")) {
             "Suprabhat! Aaj ka din acha ho. Kya karu aapke liye?"

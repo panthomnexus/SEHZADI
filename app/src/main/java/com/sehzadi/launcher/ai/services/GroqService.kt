@@ -26,10 +26,11 @@ class GroqService @Inject constructor(
     private val baseUrl = "https://api.groq.com/openai/v1/chat/completions"
 
     suspend fun chat(message: String): String = withContext(Dispatchers.IO) {
-        if (apiKey.isBlank()) return@withContext "Groq API key not configured."
+        val key = apiKey
+        if (key.isBlank()) throw Exception("Groq API key not set")
 
         val requestBody = JSONObject().apply {
-            put("model", "llama3-70b-8192")
+            put("model", "llama-3.3-70b-versatile")
             put("messages", JSONArray().apply {
                 put(JSONObject().apply {
                     put("role", "system")
@@ -46,7 +47,7 @@ class GroqService @Inject constructor(
 
         val request = Request.Builder()
             .url(baseUrl)
-            .addHeader("Authorization", "Bearer $apiKey")
+            .addHeader("Authorization", "Bearer $key")
             .addHeader("Content-Type", "application/json")
             .post(requestBody.toString().toRequestBody("application/json".toMediaType()))
             .build()
@@ -66,10 +67,11 @@ class GroqService @Inject constructor(
     }
 
     suspend fun generateCode(prompt: String, language: String): String = withContext(Dispatchers.IO) {
-        if (apiKey.isBlank()) return@withContext "Groq API key not configured."
+        val key = apiKey
+        if (key.isBlank()) throw Exception("Groq API key not set")
 
         val requestBody = JSONObject().apply {
-            put("model", "llama3-70b-8192")
+            put("model", "llama-3.3-70b-versatile")
             put("messages", JSONArray().apply {
                 put(JSONObject().apply {
                     put("role", "system")
@@ -86,7 +88,7 @@ class GroqService @Inject constructor(
 
         val request = Request.Builder()
             .url(baseUrl)
-            .addHeader("Authorization", "Bearer $apiKey")
+            .addHeader("Authorization", "Bearer $key")
             .addHeader("Content-Type", "application/json")
             .post(requestBody.toString().toRequestBody("application/json".toMediaType()))
             .build()
@@ -94,6 +96,10 @@ class GroqService @Inject constructor(
         val response = client.newCall(request).execute()
         val body = response.body?.string() ?: throw Exception("Empty response")
         val json = JSONObject(body)
+
+        if (json.has("error")) {
+            throw Exception(json.getJSONObject("error").getString("message"))
+        }
 
         json.getJSONArray("choices")
             .getJSONObject(0)

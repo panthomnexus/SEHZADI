@@ -185,8 +185,8 @@ fun SettingsScreen(
             var ttsEnabled by remember { mutableStateOf(true) }
 
             SettingsToggleCard(
-                title = "Wake Word (Hacknuma)",
-                description = "Voice se activate karo — 'Hacknuma' bolo",
+                title = "Wake Word (SEHZADI)",
+                description = "Voice se activate karo — 'SEHZADI' bolo",
                 icon = Icons.Default.Mic,
                 checked = wakeWordEnabled,
                 onCheckedChange = { wakeWordEnabled = it }

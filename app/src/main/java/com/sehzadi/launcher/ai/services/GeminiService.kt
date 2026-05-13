@@ -23,10 +23,11 @@ class GeminiService @Inject constructor(
         .build()
 
     private val apiKey: String get() = storageManager.getApiKey("gemini")
-    private val baseUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
+    private val baseUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 
     suspend fun chat(message: String, context: String = ""): String = withContext(Dispatchers.IO) {
-        if (apiKey.isBlank()) return@withContext "Gemini API key not configured. Please add it in Settings."
+        val key = apiKey
+        if (key.isBlank()) throw Exception("Gemini API key not set")
 
         val systemPrompt = """You are SEHZADI AI, a futuristic intelligent assistant built into an Android launcher.
             |You are helpful, witty, and respond in the language the user uses (Hindi, English, or Hinglish).
@@ -51,7 +52,7 @@ class GeminiService @Inject constructor(
         }
 
         val request = Request.Builder()
-            .url("$baseUrl?key=$apiKey")
+            .url("$baseUrl?key=$key")
             .post(requestBody.toString().toRequestBody("application/json".toMediaType()))
             .build()
 
