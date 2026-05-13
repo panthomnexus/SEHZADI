@@ -48,7 +48,7 @@ class VoiceEngine @Inject constructor(
     private var isSessionActive = false
 
     companion object {
-        const val WAKE_WORD = "hacknuma"
+        val WAKE_WORDS = listOf("sehzadi", "hacknuma")
     }
 
     fun initialize() {
@@ -100,7 +100,7 @@ class VoiceEngine @Inject constructor(
     fun activateSession() {
         isSessionActive = true
         _voiceState.value = VoiceState.ACTIVATED
-        speak("Haan, bolo. Main sun raha hoon.")
+        speak("Haan, bolo. Main SEHZADI hoon, sun rahi hoon.")
     }
 
     fun deactivateSession() {
@@ -127,7 +127,8 @@ class VoiceEngine @Inject constructor(
                 _recognizedText.value = text
 
                 if (isWakeWord) {
-                    if (text.lowercase().contains(WAKE_WORD)) {
+                    val lower = text.lowercase()
+                    if (WAKE_WORDS.any { lower.contains(it) }) {
                         activateSession()
                     } else {
                         startWakeWordListening()

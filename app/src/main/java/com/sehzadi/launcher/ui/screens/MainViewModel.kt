@@ -132,6 +132,9 @@ class MainViewModel @Inject constructor(
                     sendMessage(command)
                 }
             }
+
+            // Auto-start wake word listening
+            voiceEngine.startWakeWordListening()
         }
     }
 
@@ -145,27 +148,36 @@ class MainViewModel @Inject constructor(
                 val parsedIntent = aiEngine.parseUserIntent(text)
 
                 if (parsedIntent.intent == "chat") {
-                    val response = aiEngine.processCommand(text)
+                    // Route through HybridAIEngine for proper cloud/local/rule routing
+                    val routeResult = hybridAIEngine.processInput(text)
                     soundManager.playAIResponse()
                     _chatMessages.value = _chatMessages.value + ChatMessage(
-                        text = response.text,
-                        isUser = false,
-                        imageUrl = response.imageUrl
+                        text = routeResult.response,
+                        isUser = false
                     )
                     if (voiceEngine.voiceState.value != com.sehzadi.launcher.voice.VoiceState.IDLE) {
-                        voiceEngine.speak(response.text)
+                        voiceEngine.speak(routeResult.response)
                     }
                 } else {
                     val action = intentRouter.route(parsedIntent)
                     soundManager.playScan()
                     actionExecutor.execute(action)
+
+                    // Also speak the action confirmation via voice if in voice mode
+                    if (voiceEngine.voiceState.value != com.sehzadi.launcher.voice.VoiceState.IDLE) {
+                        voiceEngine.speak("${parsedIntent.intent} command process ho raha hai.")
+                    }
                 }
             } catch (e: Exception) {
                 soundManager.playError()
+                val errorMsg = "Maaf karo, kuch gadbad hui: ${e.message}"
                 _chatMessages.value = _chatMessages.value + ChatMessage(
-                    text = "Error: ${e.message}",
+                    text = errorMsg,
                     isUser = false
                 )
+                if (voiceEngine.voiceState.value != com.sehzadi.launcher.voice.VoiceState.IDLE) {
+                    voiceEngine.speak(errorMsg)
+                }
             } finally {
                 _isAIProcessing.value = false
             }

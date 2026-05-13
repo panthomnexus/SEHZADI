@@ -210,16 +210,11 @@ class HybridAIEngine @Inject constructor(
             val response = aiEngine.processCommand(input)
             AIRouteResult(response.text, AISource.CLOUD_GEMINI)
         } catch (e: Exception) {
-            try {
-                val response = aiEngine.processCommand(input)
-                AIRouteResult(response.text, AISource.CLOUD_GROQ)
-            } catch (e2: Exception) {
-                AIRouteResult(
-                    ruleEngine.process(input) ?: "Cloud AI unavailable right now.",
-                    AISource.RULE_ENGINE,
-                    0.4f
-                )
-            }
+            AIRouteResult(
+                ruleEngine.process(input) ?: "Cloud AI se connect nahi ho pa raha. Internet check karo ya thodi der baad try karo.",
+                AISource.RULE_ENGINE,
+                0.4f
+            )
         }
     }
 

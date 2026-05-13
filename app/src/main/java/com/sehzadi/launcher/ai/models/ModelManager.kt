@@ -128,40 +128,28 @@ class ModelManager @Inject constructor(
     }
 
     private suspend fun simulateModelDownload(file: File, sizeMb: Long, index: Int, state: ModelState) {
-        // Create a file that represents the model
-        // In production, this would be actual model weights download
-        val totalBytes = sizeMb * 1024 * 1024
-        val chunkSize = 1024 * 1024L // 1MB chunks
+        // Write a small metadata file (not the full model size) to avoid filling device storage
+        // In production, this would download actual model weights from a real server
+        val totalSteps = 50
+        for (step in 1..totalSteps) {
+            val progress = step.toFloat() / totalSteps
+            updateModelState(index, state.copy(
+                status = ModelStatus.DOWNLOADING,
+                downloadProgress = progress
+            ))
+            kotlinx.coroutines.delay(60)
+        }
 
+        // Write model metadata file (small, representative)
         FileOutputStream(file).use { fos ->
-            var written = 0L
-            val buffer = ByteArray(8192)
-
-            // Write model header
-            val header = "SEHZADI_MODEL_v1|${state.model.id}|${state.model.tier.name}|${state.model.version}\n"
-            fos.write(header.toByteArray())
-            written += header.length
-
-            // Write model data (fill with structured data to represent model weights)
-            while (written < totalBytes) {
-                val remaining = (totalBytes - written).coerceAtMost(buffer.size.toLong())
-                // Write pseudo-random model weight data
-                for (i in 0 until remaining.toInt()) {
-                    buffer[i] = ((written + i) % 256).toByte()
-                }
-                fos.write(buffer, 0, remaining.toInt())
-                written += remaining
-
-                // Update progress
-                val progress = (written.toFloat() / totalBytes).coerceIn(0f, 1f)
-                updateModelState(index, state.copy(
-                    status = ModelStatus.DOWNLOADING,
-                    downloadProgress = progress
-                ))
-
-                // Small delay to simulate network download speed
-                kotlinx.coroutines.delay(10)
+            val metadata = buildString {
+                appendLine("SEHZADI_MODEL_v1|${state.model.id}|${state.model.tier.name}|${state.model.version}")
+                appendLine("size_mb=$sizeMb")
+                appendLine("capabilities=${state.model.capabilities.joinToString(",")}")
+                appendLine("min_ram_mb=${state.model.minRamMb}")
+                appendLine("status=ready")
             }
+            fos.write(metadata.toByteArray())
         }
     }
 

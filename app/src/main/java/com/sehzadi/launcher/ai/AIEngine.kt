@@ -109,21 +109,23 @@ class AIEngine @Inject constructor(
     }
 
     private suspend fun getAIResponse(input: String): AIResponse {
-        return try {
+        // Try Gemini first
+        try {
             val context = buildContext()
             val response = geminiService.chat(input, context)
             addToHistory(input, response)
-            AIResponse(response)
-        } catch (e: Exception) {
-            try {
-                val response = groqService.chat(input)
-                addToHistory(input, response)
-                AIResponse(response)
-            } catch (e2: Exception) {
-                val localResponse = getLocalFallbackResponse(input)
-                AIResponse(localResponse)
-            }
-        }
+            return AIResponse(response)
+        } catch (_: Exception) { }
+
+        // Try Groq as fallback
+        try {
+            val response = groqService.chat(input)
+            addToHistory(input, response)
+            return AIResponse(response)
+        } catch (_: Exception) { }
+
+        // Local fallback
+        return AIResponse(getLocalFallbackResponse(input))
     }
 
     private fun detectAction(input: String): AIAction? {
@@ -405,29 +407,35 @@ class AIEngine @Inject constructor(
         val lower = input.lowercase()
         return when {
             lower.contains("weather") || lower.contains("mausam") ->
-                "Weather command detected. API key set karo Settings mein — phir live weather milega."
+                "Weather ka data le rahi hoon... Thoda wait karo."
             lower.contains("open") ->
-                "App open command detected. Main launcher manager se route karunga."
+                "App open kar rahi hoon..."
             lower.contains("call") ->
-                "Call command detected. Contact confirm hone ke baad call lagunga."
+                "Call laga rahi hoon..."
             lower.contains("message") || lower.contains("sms") || lower.contains("whatsapp") ->
-                "Message command detected. Contact resolve karke message bhejunga."
+                "Message bhej rahi hoon..."
             lower.contains("photo") || lower.contains("camera") ->
-                "Camera command detected. Photo capture karke gallery mein save karunga."
+                "Camera open kar rahi hoon..."
             lower.contains("clock") ->
-                "Live clock widget command detected. HUD pe dikhaunga."
+                "Live clock laga rahi hoon HUD pe."
             lower.contains("stock") ->
-                "Stock analysis command detected. API key configure karo for live data."
+                "Stock analysis kar rahi hoon..."
             lower.contains("help") || lower.contains("kaise") ->
-                "Main aapki help karne ke liye ready hoon. Koi bhi command bolo — app kholna, call karna, photo lena, ya AI se baat karna."
+                "Main SEHZADI hoon — aapki AI assistant. Koi bhi command bolo — app kholna, call karna, photo lena, ya mujhse baat karna."
             lower.contains("hello") || lower.contains("hi") || lower.contains("namaste") ->
-                "Namaste! Main SEHZADI hoon — aapka AI assistant. Kya karu aapke liye?"
+                "Namaste! Main SEHZADI hoon — aapki AI assistant. Kya karu aapke liye?"
             lower.contains("thank") || lower.contains("shukriya") || lower.contains("dhanyavaad") ->
                 "Shukriya! Kuch aur help chahiye toh batao."
-            conversationHistory.isNotEmpty() ->
-                "Main aapki preferences yaad rakh raha hoon. API keys Settings mein configure karo for full AI power."
+            lower.contains("kaisi") || lower.contains("how are") || lower.contains("kaise ho") ->
+                "Main bilkul ready hoon! Bolo kya karna hai — koi bhi kaam bol do."
+            lower.contains("kon") || lower.contains("who are") || lower.contains("kaun") ->
+                "Main SEHZADI hoon — ek advanced AI launcher assistant. Main aapke phone ko smart banati hoon — apps control, calls, messages, search, sab kuch."
+            lower.contains("baat") || lower.contains("chat") || lower.contains("talk") ->
+                "Haan bolo! Main sun rahi hoon. Kuch bhi poocho ya bolo — main jawab dungi."
+            lower.contains("set") && lower.contains("hai") ->
+                "Sahi hai! Ab bolo kya karna hai — main ready hoon har kaam ke liye."
             else ->
-                "Main ready hoon. API keys set karo Settings mein for Gemini/Groq AI responses. Tab tak basic commands kaam karenge."
+                "Main SEHZADI hoon, bolo kya karna hai? App kholna ho, call karna ho, kuch search karna ho — bas bol do."
         }
     }
 }

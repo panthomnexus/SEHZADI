@@ -77,7 +77,7 @@ fun VoiceOverlayScreen(
             Text(
                 text = when (voiceState) {
                     VoiceState.IDLE -> "Tap to speak"
-                    VoiceState.LISTENING_WAKE_WORD -> "Say 'Hacknuma'..."
+                    VoiceState.LISTENING_WAKE_WORD -> "Say 'SEHZADI'..."
                     VoiceState.ACTIVATED -> "Activated! Speak now..."
                     VoiceState.LISTENING_COMMAND -> "Listening..."
                     VoiceState.PROCESSING -> "Processing..."
@@ -186,7 +186,7 @@ fun VoiceOverlayScreen(
 
             // Hints
             Text(
-                text = "Say 'Hacknuma' to activate anytime",
+                text = "Say 'SEHZADI' to activate anytime",
                 fontSize = 12.sp,
                 fontFamily = RajdhaniFont,
                 color = TextDim.copy(alpha = 0.5f)
