@@ -28,7 +28,8 @@ enum class TaskComplexity {
 data class AIRouteResult(
     val response: String,
     val source: AISource,
-    val confidence: Float = 1f
+    val confidence: Float = 1f,
+    val imageUrl: String? = null
 )
 
 @Singleton
@@ -208,7 +209,11 @@ class HybridAIEngine @Inject constructor(
     private suspend fun getCloudResponse(input: String): AIRouteResult {
         return try {
             val response = aiEngine.processCommand(input)
-            AIRouteResult(response.text, AISource.CLOUD_GEMINI)
+            AIRouteResult(
+                response = response.text,
+                source = AISource.CLOUD_GEMINI,
+                imageUrl = response.imageUrl
+            )
         } catch (e: Exception) {
             AIRouteResult(
                 ruleEngine.process(input) ?: "Cloud AI se connect nahi ho pa raha. Internet check karo ya thodi der baad try karo.",
